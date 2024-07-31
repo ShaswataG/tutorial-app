@@ -1,5 +1,6 @@
 const { query } = require('express');
 const { supabase } = require('../connect');
+const { REALTIME_SUBSCRIBE_STATES } = require('@supabase/supabase-js');
 
 const createCourse = async (userLoggedIn, newCourseInfo) => {
     try {
@@ -80,6 +81,35 @@ const getBlogs = async (query) => {
     return data;
 }
 
+const getBlog = async (userLoggedIn, blogId) => {
+    console.log('courseMode.getBlog is being called');
+    let { data:data2, error: error2 } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('id', blogId)
+        .select();
+    if (error2)
+        throw new Error(error2);
+    console.log(data2, error2);
+    const { course_id } = data2[0];
+    console.log(course_id);
+    let { data, error } = await supabase
+        .from('enrollment')
+        .select('*')
+        .match({
+            user_id: userLoggedIn.id,
+            course_id: course_id
+        })
+    console.log(data, error);
+    if (error)
+        throw new Error(error);
+    if (data.length === 0) {
+        console.log('You are not enrolled in this course');
+        throw new Error(`You are not enrolled in this course`)
+    }
+    return data1;
+}
+
 const createBlog = async (userLoggedIn, newBlog) => {
     console.log('courseModel.createBlog is being called');
     newBlog.course_id = Number(newBlog.course_id);
@@ -98,7 +128,7 @@ const createBlog = async (userLoggedIn, newBlog) => {
     let { data1, error1 } = await supabase
         .from('blogs')
         .insert({
-            course_id: newBlog.courseId,
+            course_id: newBlog.course_id,
             author_id: userLoggedIn.id,
             title: newBlog.title,
             content: newBlog.content,
@@ -113,5 +143,6 @@ module.exports = {
     getCourses,
     getCourse,
     getBlogs,
+    getBlog,
     createBlog
 }

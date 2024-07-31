@@ -18,6 +18,10 @@ const getBlogs = async (query) => {
     return await courseModel.getBlogs(query);
 }
 
+const getBlog = async (userLoggedIn, blogId) => {
+    return await courseModel.getBlog(userLoggedIn, blogId);
+}
+
 const createBlog = async (userLoggedIn, newBlog) => {
     return await courseModel.createBlog(userLoggedIn, newBlog);
 }
@@ -27,5 +31,6 @@ module.exports = {
     getCourses,
     getCourse,
     getBlogs,
+    getBlog,
     createBlog
 }

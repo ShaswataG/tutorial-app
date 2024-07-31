@@ -29,6 +29,14 @@ const getBlogs = async (req, res) => {
     }
 }
 
+const getBlog = async (req, res) => {
+    try {
+        const data = await courseService.getBlog(req.user, req.params.id);
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
+}
+
 const createBlog = async (req, res) => {
     try {
         const data = await courseService.createBlog(req.user, req.body);
@@ -42,5 +50,6 @@ module.exports = {
     createCourse,
     getCourses,
     getBlogs,
+    getBlog,
     createBlog
 }
