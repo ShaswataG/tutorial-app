@@ -1,8 +1,10 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const { supabase } = require('../connect');
 const { query } = require('express');
+const { jwtsecret } = require('../connect');
 
 const register = async (userInfo) => {
     const { username, email, password } = userInfo;
@@ -22,19 +24,32 @@ const register = async (userInfo) => {
 
 const login = async (user) => {
     try {
+        console.log('userService.login is getting called');
         const { email, password } = user;
-        const { data:checkUserExists, error:error1 } = await supabase
+        console.log(user);
+        let { data:checkUserExists, error:error1 } = await supabase
             .from('users')
             .select('*')
-            .eq('email', email);
+            .eq('email', email)
+            .single();
+        console.log(checkUserExists, error1);
         if (checkUserExists.length == 0) {
+            console.log('Email not registered');
             throw new Error('Email not registered');
-        } else if (await bcrypt.compare(password, data[0].password)) {
-            const accessToken =  jwt.sign(data[0], process.env.ACCESS_TOKEN_SECRET);
+        } else if (await bcrypt.compare(password, checkUserExists.password)) {
+            const accessToken =  jwt.sign({
+                id: checkUserExists.id,
+                username: checkUserExists.username,
+                email: checkUserExists.email 
+            }, jwtsecret);
+            console.log('Access Token: ', accessToken);
             return accessToken;
+        } else {
+            console.log('Incorrect password');
+            throw new Error('Incorrect password');
         }
     } catch (error) {
-
+        throw new Error(error);
     }
 }
 
@@ -56,6 +71,7 @@ const deleteUser = async (userId) => {
 
 module.exports = {
     register,
+    login,
     getUsers,
     getUser,
     updateUser,

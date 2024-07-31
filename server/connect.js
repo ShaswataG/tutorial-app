@@ -1,6 +1,8 @@
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
+const jwtsecret = process.env.ACCESS_TOKEN_SECRET;
+
 const supabaseUrl = process.env.SUPABASE_URL;
 const apiKey = process.env.API_KEY;
 
@@ -9,4 +11,4 @@ const supabase = createClient(supabaseUrl, apiKey)
 
 // console.log(supabase);
 
-module.exports = { supabase };
+module.exports = { supabase, jwtsecret };
