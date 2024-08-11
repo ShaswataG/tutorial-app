@@ -151,7 +151,8 @@ const login = async (user) => {
         if (checkUserExists.length == 0) {
             console.log('Email not registered');
             throw new Error('Email not registered');
-        } else if (checkUserExists.is_verified) {
+        } else if (checkUserExists.is_verified === false) {
+            console.log('User not verfied')
             throw new Error('Users not verified');
         } else if (await bcrypt.compare(password, checkUserExists.password)) {
             const accessToken =  jwt.sign({
