@@ -138,6 +138,8 @@ const createBlog = async (userLoggedIn, newBlog) => {
     return data1;
 }
 
+
+
 module.exports = {
     createCourse,
     getCourses,

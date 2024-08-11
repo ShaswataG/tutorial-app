@@ -1,4 +1,3 @@
-const { query } = require('express');
 const courseModel = require('../models/courseModel');
 
 const createCourse = async (userLoggedIn, courseInfo) => {

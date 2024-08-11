@@ -1,5 +1,43 @@
 const { supabase } = require('../connect');
 
+const insertOtp = async (email, otp) => {
+    const expirationTime = new Date(Date.now() + 10 * 60000);
+    console.log('insertOtp 1');
+    const { data:checkIfEmailExists, error:error1 } = await supabase
+        .from('otp')
+        .select('*')
+        .eq('email', email)
+    console.log('insertOtp 2');
+    if (checkIfEmailExists.length > 0) {
+        const { data:updateOtp, error:error2 } = await supabase
+            .from('otp')
+            .update({
+                otp: otp,
+                updated_at: new Date(Date.now()),
+                expiration_time: expirationTime
+            })
+            .eq('email', email);
+        console.log('insertOtp 3'); 
+    } else {
+        const { data:insertNewOtp, error:error3 } = await supabase
+            .from('otp')
+            .insert({
+                email: email,
+                otp: otp,
+                created_at: new Date(Date.now()),
+                updated_at: new Date(Date.now()),
+                expiration_time: expirationTime,
+            });
+        console.log(insertNewOtp, error3);
+        if (error3)
+            throw new Error(error3.message);
+        console.log('insertOtp 4')
+    }
+    if (error1)
+        throw new Error(`Couldn't generate otp`);
+    return true;
+}
+
 const insertUser = async (newUserInfo) => {
     console.log('test 1');
     let { data:checkExistingData, error:error1 } = await supabase
@@ -19,13 +57,37 @@ const insertUser = async (newUserInfo) => {
             .insert({
                 username: newUserInfo.username,
                 email: newUserInfo.email,
-                password: newUserInfo.password
+                password: newUserInfo.password,
+                is_verified: false
             })
         if (error)
             throw new Error(error);
-        return data;
+        return true;
     }
 }
+
+const verifyUser = async (email, otp) => {
+    console.log('Inside userModel.verifyUser');
+    const { data, error } = await supabase
+        .from('otp')
+        .select('*')
+        .eq('email', email)
+        .single();
+    console.log(data, error);
+    if (error)
+        throw new Error(error);
+    if (otp != data.otp) {
+        return false;
+    }
+    const { data:verifyUser, error:error1 } = await supabase
+        .from('users')
+        .update({ is_verified: true })
+        .eq('email', email);
+    console.log(verifyUser, error1);
+    if (error)
+        throw new Error('Verification failed');
+    return data;
+} 
 
 const getUsers = async (query) => {
     console.log('userModels.getUsers is being called');
@@ -65,6 +127,8 @@ const updateUser = async (userId, updates) => {
 }
 
 module.exports = {
+    insertOtp,
+    verifyUser,
     insertUser,
     getUsers,
     getUser,

@@ -26,6 +26,19 @@ const createUser = async (req, res) => {
     }
 }
 
+const verifyMail = async (req, res) => {
+    try {
+        const data = await userService.verifyUser(req.body);
+        res
+          .status(200)
+          .json(data);
+    } catch (error) {
+        res
+          .status(500)
+          .json({ error: error });
+    }
+}
+
 const getUsers = async (req, res) => {
     try {
         const data = await userService.getUsers(req.query);
@@ -81,6 +94,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
     login,
     createUser,
+    verifyMail,
     getUsers,
     getUser,
     updateUser,
