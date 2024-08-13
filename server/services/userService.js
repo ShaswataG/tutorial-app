@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
 const { sendOtp } = require('./emailService');
+const { captureRejectionSymbol } = require('events');
 
 const register = async (userInfo) => {
     const { username, email, password } = userInfo;
@@ -128,6 +129,26 @@ const deleteUser = async (userId) => {
     return await userModel.deleteUser(userId);
 }
 
+const makeAdmin = async (userLoggedIn, userId, courseId) => {
+    try {
+        console.log('Inside userService.makeAdmin');
+        console.log(userId, courseId);
+        const checkUserRoles = await userModel.checkUserRoles(userLoggedIn, Number(courseId));
+        console.log('checkUserRoles', checkUserRoles);
+        if (checkUserRoles.length < 1) {
+            throw new Error(`Unauthorised access`);
+        }
+        const makeAdmin = await userModel.makeAdmin(Number(userId), Number(courseId));
+        console.log('makeAdmin', makeAdmin);
+        if (makeAdmin === true) {
+            return true;
+        }
+    } catch (error) {
+        console.error(error.message);
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     register,
     verifyUser,
@@ -135,5 +156,6 @@ module.exports = {
     getUsers,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    makeAdmin
 }

@@ -128,6 +128,34 @@ const updateUser = async (userId, updates) => {
     return data;
 }
 
+const checkUserRoles = async (userLoggedIn, courseId) => {
+    console.log(userLoggedIn, courseId);
+    const { data, error } = await supabase
+        .from('user_roles')
+        .select('*')
+        .match({
+            user_id: userLoggedIn.id,
+            course_id: courseId,
+            role: 'admin'
+        });
+    if (error)
+        throw new Error(`Couldn't fetch user_roles`);
+    return data;
+}
+
+const makeAdmin = async (userId, courseId) => {
+    const { data, error } = await supabase
+        .from('user_roles')
+        .insert({
+            user_id: userId,
+            course_id: courseId,
+            role: 'admin'
+        });
+    if (error)
+        throw new Error(`Couldn't insert admin`);
+    return true;
+}
+
 module.exports = {
     insertOtp,
     getOtpEntry,
@@ -135,5 +163,7 @@ module.exports = {
     insertUser,
     getUsers,
     getUser,
-    updateUser
+    updateUser,
+    checkUserRoles,
+    makeAdmin
 }

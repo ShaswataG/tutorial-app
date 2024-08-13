@@ -91,6 +91,15 @@ const deleteUser = async (req, res) => {
     }
 }
 
+const addAdmin = async (req, res) => {
+    try {
+        const data = await userService.makeAdmin(req.user, req.body.user_id, req.body.course_id);
+        return res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+}
+
 module.exports = {
     login,
     createUser,
@@ -98,5 +107,6 @@ module.exports = {
     getUsers,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    addAdmin
 }
