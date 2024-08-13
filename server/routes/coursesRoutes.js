@@ -7,6 +7,8 @@ courseRouter.route('/').get(courseController.getCourses).post(authenticateToken,
 // courseRouter.route('/:id').get(courseController.getCourse).patch(courseController.updateCourse);
 courseRouter.route('/blogs').get(courseController.getBlogs).post(authenticateToken, courseController.createBlog);
 courseRouter.route('/blogs/:id').get(authenticateToken, courseController.getBlog);
+courseRouter.route('/lectures').post(authenticateToken, courseController.createLecture);
+courseRouter.route('/lectures/:id').get(authenticateToken, courseController.getLecture);
 
 module.exports = {
     courseRouter

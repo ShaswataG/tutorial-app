@@ -4,12 +4,12 @@ const { REALTIME_SUBSCRIBE_STATES } = require('@supabase/supabase-js');
 
 const createCourse = async (userLoggedIn, newCourseInfo) => {
     try {
-        console.log('courseModel.createCourse is getting called');
+        console.log('courseModel.createCourse is being called');
         console.log(userLoggedIn);
         console.log(newCourseInfo);
         let { id } = userLoggedIn;
         let { title, description, isPaid, price } = newCourseInfo;
-        isPaid = (isPaid === 'true');
+        isPaid = (isPaid === 'true') ? true : false;
         price = Number(price);
         console.log({
             isPaid: isPaid,
@@ -82,63 +82,85 @@ const getBlogs = async (query) => {
 }
 
 const getBlog = async (userLoggedIn, blogId) => {
-    console.log('courseMode.getBlog is being called');
-    let { data:data2, error: error2 } = await supabase
+    const { data, error } = await supabase
         .from('blogs')
         .select('*')
         .eq('id', blogId)
-        .select();
-    if (error2)
-        throw new Error(error2);
-    console.log(data2, error2);
-    const { course_id } = data2[0];
-    console.log(course_id);
-    let { data, error } = await supabase
-        .from('enrollment')
+        .single();
+    if (error)
+        throw new Error(`Couldn't fetch blog`);
+    return data;
+}
+
+const getLecture = async (lectureId) => {
+    console.log('Inside courseModel.getLecture');
+    console.log('lectureId: ', lectureId);
+    const { data, error } = await supabase
+        .from('lectures')
+        .select('*')
+        .eq('id', lectureId)
+        .single();
+    if (error)
+        throw new Error(error.message);
+    console.log('data', data)
+    return data;
+}
+
+const getEnrollment = async (userLoggedIn, courseId) => {
+    const { data, error } = await supabase
+        .from('user_roles')
         .select('*')
         .match({
             user_id: userLoggedIn.id,
-            course_id: course_id
+            course_id: courseId
         })
-    console.log(data, error);
     if (error)
-        throw new Error(error);
-    if (data.length === 0) {
-        console.log('You are not enrolled in this course');
-        throw new Error(`You are not enrolled in this course`)
-    }
-    return data1;
+        throw new Error(`Couldn't fetch user_roles`);
+    return data;
 }
 
-const createBlog = async (userLoggedIn, newBlog) => {
-    console.log('courseModel.createBlog is being called');
-    newBlog.course_id = Number(newBlog.course_id);
-    console.log('userLoggedIn', userLoggedIn);
-    console.log('newBlog', newBlog);
-    let { data, error } = await supabase
+const checkUserRoles = async (userLoggedIn, newBlog) => {
+    const { data, error } = await supabase
         .from('user_roles')
         .select('*')
-        .eq('course_id', Number(newBlog.course_id))
-        .select();
-    console.log(typeof(data[0].user_id), typeof(userLoggedIn.id));
-    if (data[0].user_id != userLoggedIn.id) {
-        console.log(`You don't have write access to this course`)
-        throw new Error(`You don't have write access to this course`);
-    }
-    let { data1, error1 } = await supabase
+        .match({
+            user_id: userLoggedIn.id,
+            course_id: newBlog.course_id,
+            role: 'admin'
+        })
+    if (error)
+        throw new Error(`Couldn't fetch user_roles`);
+    return data;
+}
+
+const insertBlog = async (userLoggedIn, newBlog) => {
+    const { data, error } = await supabase
         .from('blogs')
         .insert({
-            course_id: newBlog.course_id,
-            author_id: userLoggedIn.id,
+            course_id: Number(newBlog.course_id),
+            author_id: Number(userLoggedIn.id),
             title: newBlog.title,
             content: newBlog.content,
         });
-    if (error1)
-        throw new Error(error1);
-    return data1;
+    if (error)
+        throw new Error(`Blog upload failed`);
+    return true;
 }
 
-
+const insertLecture = async (userLoggedIn, newLecture) => {
+    const { data, error } = await supabase
+        .from('lectures')
+        .insert({
+            course_id: Number(newLecture.course_id),
+            author_id: Number(userLoggedIn.id),
+            title: newLecture.title,
+            video_url: newLecture.video_url,
+            description: newLecture.description
+        })
+    if (error)
+        throw new Error(`Lecture upload failed`);
+    return true;
+}
 
 module.exports = {
     createCourse,
@@ -146,5 +168,9 @@ module.exports = {
     getCourse,
     getBlogs,
     getBlog,
-    createBlog
+    getLecture,
+    getEnrollment,
+    checkUserRoles,
+    insertBlog,
+    insertLecture
 }

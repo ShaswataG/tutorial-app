@@ -66,8 +66,8 @@ const insertUser = async (newUserInfo) => {
     }
 }
 
-const verifyUser = async (email, otp) => {
-    console.log('Inside userModel.verifyUser');
+const getOtpEntry = async (email) => {
+    console.log('userModel.getOtpEntry is being called');
     const { data, error } = await supabase
         .from('otp')
         .select('*')
@@ -75,19 +75,21 @@ const verifyUser = async (email, otp) => {
         .single();
     console.log(data, error);
     if (error)
-        throw new Error(error);
-    if (otp != data.otp) {
-        return false;
-    }
-    const { data:verifyUser, error:error1 } = await supabase
+        throw new Error(`Couldn't fetch otp entry`);
+    console.log('Just before return', data);
+    return data;
+}
+
+const verifyUser = async (email) => {
+    console.log('userModel.verifyUser is being called');
+    const { data, error } = await supabase
         .from('users')
         .update({ is_verified: true })
         .eq('email', email);
-    console.log(verifyUser, error1);
     if (error)
         throw new Error('Verification failed');
-    return data;
-} 
+    return true;
+}
 
 const getUsers = async (query) => {
     console.log('userModels.getUsers is being called');
@@ -128,6 +130,7 @@ const updateUser = async (userId, updates) => {
 
 module.exports = {
     insertOtp,
+    getOtpEntry,
     verifyUser,
     insertUser,
     getUsers,

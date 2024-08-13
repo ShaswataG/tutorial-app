@@ -8,14 +8,7 @@ const { jwtsecret } = require('../connect');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: '',
-        pass: ''
-    }
-})
+const { sendOtp } = require('./emailService');
 
 const register = async (userInfo) => {
     const { username, email, password } = userInfo;
@@ -32,19 +25,7 @@ const register = async (userInfo) => {
             console.log('Test A');
             if (await userModel.insertOtp(email, otp)) {
                 console.log('Test B');
-                const mailOptions = {
-                    from: '',
-                    to: email,
-                    subject: 'Your OTP Code',
-                    html: `Your otp is ${otp}`
-                };
-                transporter.sendMail(mailOptions, (error, info) => {
-                    console.log(error)
-                    // if (error) {
-                    //     throw new Error(error);
-                    // }
-                    return info;
-                });
+                await sendOtp(email, otp);
                 console.log('Inserted otp in OTP table')
             } else {
                 console.log('Test C');
@@ -83,59 +64,19 @@ const insertOtp = async (email) => {
 }
 
 const verifyUser = async ({ email, otp }) => {
-    console.log('Inside userService.verifyUser');
-    return await userModel.verifyUser(email, otp);
+    try {
+        console.log('userService.verifyUser is being called');
+        const otpEntry = await userModel.getOtpEntry(email);
+        console.log('Otp entry', otpEntry);
+        if (otp != otpEntry.otp)
+            return false;
+        if (await userModel.verifyUser(email) === true) {
+            return 'User verified successfully';
+        }
+    } catch (error) {
+        throw new Error(error.message);
+    }
 }
-
-// const register = async (userInfo) => {
-//     const { username, email, password } = userInfo;
-//     try {
-//         const hashedPassword = await bcrypt.hash(password, 10);
-//         const otp = crypto.randomInt(100000, 999999);
-//         const newUser = {
-//             username: username,
-//             email: email,
-//             password: hashedPassword,
-//             otp: otp
-//         }
-//         const data = await userModel.insertUser(newUser);
-//         await supabase.from('otps').upsert({ email, otp });
-//         const mailOptions = {
-//             from: '',
-//             to: email,
-//             subject: 'Your OTP Code',
-//             text: `Your otp is ${otp}`
-//         };
-//         transporter.sendMail(mailOptions, (error, info) => {
-//             if (error) {
-//                 return res.status(500).send(error.toString());
-//             }
-//             res.status(200).send('OTP sent!');
-//         })
-//         return data;
-//     } catch (error) {
-//         throw error;
-//     }
-// }
-
-// const verifyMail = async (verificationInfo) {
-//     const { email, otp } = req.body;
-//     const { data, error } = await supabase
-//         .from('otps')
-//         .select('*')
-//         .eq('email', email)
-//         .eq('otp', otp)
-//         .single();
-//     if (error || !data) {
-//         return res.status(400).send('Invalid OTP');
-//     }
-//     await supabase
-//         .from('users')
-//         .select('*')
-//         .eq('email', email)
-//         .update({ registered: true });
-    
-// }
 
 const login = async (user) => {
     try {
