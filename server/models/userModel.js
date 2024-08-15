@@ -47,9 +47,12 @@ const insertUser = async (newUserInfo) => {
         .limit(1);
     console.log('test 2');
     console.log(checkExistingData, error1);
-    if (error1)
+    if (error1) {
+        console.error(error.message);
         throw new Error(error1);
+    }
     if (checkExistingData.length > 0) {
+        console.log('Email already registered');
         throw new Error("Email already registered");
     } else {
         const { data, error }= await supabase
@@ -60,8 +63,10 @@ const insertUser = async (newUserInfo) => {
                 password: newUserInfo.password,
                 is_verified: false
             })
-        if (error)
+        if (error) {
+            console.error(error.message);
             throw new Error(error);
+        }
         return true;
     }
 }
@@ -144,15 +149,55 @@ const checkUserRoles = async (userLoggedIn, courseId) => {
 }
 
 const makeAdmin = async (userId, courseId) => {
+    // const { data, error } = await supabase
+    // .from('user_roles')
+    // .upsert(
+    //   {
+    //     user_id: userId,
+    //     course_id: courseId,
+    //     role: 'admin'
+    //   },
+    //   {
+    //     onConflict: ['user_id', 'course_id']
+    //   }
+    // );
+    // const { data, error } = await supabase
+    // .from('user_roles')
+    // .upsert(
+    //   {
+    //     user_id: userId,
+    //     course_id: courseId,
+    //     role: 'admin'
+    //   },
+    //   {
+    //     onConflict: {
+    //         constraint: 'user_course_unique',
+    //         columns: ['user_id', 'course_id'],
+    //         updateColumns: ['role']
+    //     }
+    //   }
+    // );
+    // const { data, error } = await supabase
+    // .from('user_roles')
+    // .upsert({
+    //   user_id: userId,
+    //   course_id: courseId,
+    //   role: 'admin'
+    // })
+    // .onConflict(['user_id', 'course_id']);
     const { data, error } = await supabase
         .from('user_roles')
-        .insert({
+        .upsert({
             user_id: userId,
             course_id: courseId,
             role: 'admin'
+        },
+        {
+            onConflict: 'user_id, course_id'
         });
+  
     if (error)
-        throw new Error(`Couldn't insert admin`);
+        throw new Error(error.message);
     return true;
 }
 
