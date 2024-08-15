@@ -69,9 +69,15 @@ const verifyUser = async ({ email, otp }) => {
         console.log('userService.verifyUser is being called');
         const otpEntry = await userModel.getOtpEntry(email);
         console.log('Otp entry', otpEntry);
-        if (otp != otpEntry.otp)
+        console.log(`new Date(): `, new Date(Date.now()));
+        console.log(`otpEntry.expiration_time: `, otpEntry.expiration_time);
+        // if (otp != otpEntry.otp || ((otp == otpEntry.otp) && (new Date() > otpEntry.expiration_time))) {
+        if (otp !== otpEntry.otp || new Date() > otpEntry.expiration_time) {
+            console.log(`Invalid OTP`)
             return false;
+        }
         if (await userModel.verifyUser(email) === true) {
+            await userModel.deleteOtp(email);
             return 'User verified successfully';
         }
     } catch (error) {

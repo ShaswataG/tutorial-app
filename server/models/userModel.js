@@ -96,6 +96,17 @@ const verifyUser = async (email) => {
     return true;
 }
 
+const deleteOtp = async (email) => {
+    console.log(`userModel.deleteOtp is being called`);
+    const { data, error } = await supabase
+        .from('otp')
+        .delete()
+        .eq('email', email);
+    if (error)
+        throw new Error(`Couldn't delete otp entry`);
+    return true;
+}
+
 const getUsers = async (query) => {
     console.log('userModels.getUsers is being called');
     console.log('test 1');
@@ -149,42 +160,6 @@ const checkUserRoles = async (userLoggedIn, courseId) => {
 }
 
 const makeAdmin = async (userId, courseId) => {
-    // const { data, error } = await supabase
-    // .from('user_roles')
-    // .upsert(
-    //   {
-    //     user_id: userId,
-    //     course_id: courseId,
-    //     role: 'admin'
-    //   },
-    //   {
-    //     onConflict: ['user_id', 'course_id']
-    //   }
-    // );
-    // const { data, error } = await supabase
-    // .from('user_roles')
-    // .upsert(
-    //   {
-    //     user_id: userId,
-    //     course_id: courseId,
-    //     role: 'admin'
-    //   },
-    //   {
-    //     onConflict: {
-    //         constraint: 'user_course_unique',
-    //         columns: ['user_id', 'course_id'],
-    //         updateColumns: ['role']
-    //     }
-    //   }
-    // );
-    // const { data, error } = await supabase
-    // .from('user_roles')
-    // .upsert({
-    //   user_id: userId,
-    //   course_id: courseId,
-    //   role: 'admin'
-    // })
-    // .onConflict(['user_id', 'course_id']);
     const { data, error } = await supabase
         .from('user_roles')
         .upsert({
@@ -210,5 +185,6 @@ module.exports = {
     getUser,
     updateUser,
     checkUserRoles,
-    makeAdmin
+    makeAdmin,
+    deleteOtp
 }
