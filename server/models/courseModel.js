@@ -2,6 +2,25 @@ const { query } = require('express');
 const { supabase } = require('../connect');
 const { REALTIME_SUBSCRIBE_STATES } = require('@supabase/supabase-js');
 
+// const createCourse = async (userLoggedIn, newCourseInfo) => {
+//     let { title, description, isPaid, price } = newCourseInfo;
+//     isPaid = (isPaid === 'true') ? true : false;
+//     price = Number(price);
+//     const { data, error } = await supabase
+//         .from('courses')
+//         .insert({
+//             title: title,
+//             description: description,
+//             is_paid: isPaid,
+//             price: price,
+//             author_id: userLoggedIn.id
+//         })
+//         .select('id');
+//     if (error)
+//         throw new Error(`Couldn't insert course`);
+//     return data;
+// }
+
 const createCourse = async (userLoggedIn, newCourseInfo) => {
     try {
         console.log('courseModel.createCourse is being called');
