@@ -165,7 +165,8 @@ const makeAdmin = async (userId, courseId) => {
         .upsert({
             user_id: userId,
             course_id: courseId,
-            role: 'admin'
+            role: 'admin',
+            is_owner: false
         },
         {
             onConflict: 'user_id, course_id'

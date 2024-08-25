@@ -60,6 +60,7 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
                 user_id: id,
                 course_id: courseId,
                 role: "admin",
+                is_owner: true
             })
         console.log('data2', data2);
         return data;
@@ -175,7 +176,7 @@ const insertLecture = async (userLoggedIn, newLecture) => {
             title: newLecture.title,
             video_url: newLecture.video_url,
             description: newLecture.description
-        })
+        });
     if (error)
         throw new Error(`Lecture upload failed`);
     return true;
