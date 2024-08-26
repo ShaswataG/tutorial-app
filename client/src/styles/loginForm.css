@@ -13,14 +13,14 @@
 }
 
 .login-form > input {
-    width: 60%;
+    /* width: 60%;
     font-size: 1.6em;
     background-color: inherit;
     color: inherit;
     text-indent: 2px;
     padding-bottom: 3px;
     border: none;
-    border-bottom: solid black 1px;
+    border-bottom: solid black 1px; */
 }
 
 .login-form button {

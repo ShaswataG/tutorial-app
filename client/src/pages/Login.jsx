@@ -2,26 +2,10 @@ import Textfield from "../components/Login/Textfield";
 import SubmitButton from "../components/Login/SubmitButton";
 import { useState } from "react";
 import axios from 'axios';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-// import * as React from 'react';
-// import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
-// import GlobalStyles from '@mui/joy/GlobalStyles';
-// import CssBaseline from '@mui/joy/CssBaseline';
-// import Box from '@mui/joy/Box';
-// import Button from '@mui/joy/Button';
-// import Checkbox from '@mui/joy/Checkbox';
-// import Divider from '@mui/joy/Divider';
-// import FormControl from '@mui/joy/FormControl';
-// import FormLabel from '@mui/joy/FormLabel';
-// import IconButton, { IconButtonProps } from '@mui/joy/IconButton';
-// import Link from '@mui/joy/Link';
-// import Input from '@mui/joy/Input';
-// import Typography from '@mui/joy/Typography';
-// import Stack from '@mui/joy/Stack';
-// import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
-// import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
-// import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
-// import GoogleIcon from '../assets/GoogleIcon';
+const baseURL = 'http://localhost:4000';
 
 export default function Login() {
 
@@ -32,6 +16,9 @@ export default function Login() {
 
     const handleChange = async (event) => {
         const { name, value } = event.target;
+        // console.log('test')
+        // console.log(event.target);
+        console.log(user);
         setUser(prev => {
             return {
                 ...prev,
@@ -42,9 +29,12 @@ export default function Login() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // const response = await axios.post(baseURL + '/users/login', user);
-        // const token = response.data;
-        // localStorage.setItem('jwt_token', token);
+        console.log(user);
+        const response = await axios.post(baseURL + '/users/login', user);
+        // console.log(response.data);
+        const token = response.data;
+        localStorage.setItem('jwt_token', token);
+        console.log(localStorage.getItem('jwt_token'));
     }
 
 
@@ -53,11 +43,52 @@ export default function Login() {
         <>
             <form className="login-form">
                 <h1>Sign in</h1>
-                <Textfield handleChange={handleChange} type="email" placeholder="abc@example.com" name="email" value={user.email} />
-                <Textfield handleChange={handleChange} type="password" placeholder="Password" name="password" value={user.password} />
-                <SubmitButton handleSubmit={handleSubmit} text="Sign up" />
+                {/* <Textfield handleChange={handleChange} type="email" placeholder="abc@example.com" name="email" value={user.email} />
+                <Textfield handleChange={handleChange} type="password" placeholder="Password" name="password" value={user.password} /> */}
+                <TextField 
+                    id="standard-basic" 
+                    label="Email" 
+                    variant="standard" 
+                    type="email" 
+                    name="email" 
+                    value={user.email} 
+                    onChange={handleChange} 
+                    sx={
+                        {
+                            width: "60%",
+                            input: {
+                                fontSize: '1.6em',
+                            },
+                            label: {
+                                fontSize: '1.4em',
+                            }
+                        }
+                    }
+                />
+                <TextField 
+                    id="standard-basic" 
+                    label="Password" 
+                    variant="standard" 
+                    type="password" 
+                    name="password" 
+                    value={user.password} 
+                    onChange={handleChange} 
+                    sx={
+                        {
+                            width: "60%",
+                            input: {
+                                fontSize: '1.6em',
+                            },
+                            label: {
+                                fontSize: '1.4em',
+                            }
+                        }
+                    }
+                />
+                {/* <SubmitButton handleSubmit={handleSubmit} text="Sign up" /> */}
+                <Button variant="contained" onClick={handleSubmit}>Sign up</Button>
                 <div className="boundary"></div>
-                <p>Don't have an account? <a href="">Sign up</a></p>
+                <p>Don't have an account? <a href="/register">Sign up</a></p>
             </form>
         </>
     )
