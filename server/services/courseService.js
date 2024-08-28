@@ -1,3 +1,4 @@
+const { captureRejectionSymbol } = require('nodemailer/lib/xoauth2');
 const courseModel = require('../models/courseModel');
 
 const createCourse = async (userLoggedIn, courseInfo) => {
@@ -6,7 +7,46 @@ const createCourse = async (userLoggedIn, courseInfo) => {
 }
 
 const getCourses = async (query) => {
-    return await courseModel.getCourses(query);
+    // return await courseModel.getCourses(query);
+    try {
+        let courses = await courseModel.getCourses(query);
+        // console.log(courses);
+        // courses = courses.map(async (course) => {
+        //     let admins = await courseModel.getCourseAdmins(course.id);
+        //     admins = admins.map((admin => {
+        //         return admin.users.username;
+        //     }));
+        //     return {
+        //         ...course,
+        //         admins: admins
+        //     }
+        // })
+        // courses.forEach(async (course, index, courses) => {
+        //     let admins = await courseModel.getCourseAdmins(course.id);
+        //     // console.log(admins);
+        //     admins = admins.map((admin => {
+        //         return admin.users.username;
+        //     }));
+        //     courses[index] = {
+        //         ...course,
+        //         admins: admins
+        //     }
+        //     console.log(courses[index]);
+        // })
+        courses = await Promise.all(courses.map(async (course) => {
+            let admins = await courseModel.getCourseAdmins(course.id);
+            admins = admins.map(admin => admin.users.username);
+        
+            return {
+                ...course,
+                admins
+            };
+        }));
+        console.log(courses);
+        return courses;
+    } catch (error) {
+        throw new Error(error);
+    }
 }
 
 const getCourse = async (courseId) => {

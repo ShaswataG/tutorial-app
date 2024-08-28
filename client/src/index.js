@@ -4,6 +4,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './styles/index.css';
 import './styles/home/about.css';
+import './styles/home/courses/courses.css';
+import './styles/home/courses/course-container.css';
+import './styles/home/courses/course-card.css';
 import './styles/registerForm.css';
 import './styles/loginForm.css';
 

@@ -25,7 +25,9 @@ const getCourse = async (req, res) => {
 /* GET: http://localhost:4000/courses */
 const getCourses = async (req, res) => {
     try {
-        const data = await courseService.getCourses(req.body);
+        console.log(`courseController.getCourses is called`);
+        console.log(req.body);
+        const data = await courseService.getCourses(req.query);
         return res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error });

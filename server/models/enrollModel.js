@@ -3,10 +3,10 @@ const { supabase } = require('../connect');
 const getTutorsByCourseId = async (courseId) => {
     try {
         const { data, error } = await supabase
-            .from('users')
-            .select('*, user_roles(role, is_owner)')
-            .eq('user_roles.course_id', courseId)
-            .eq('user_roles.is_owner', true);
+            .from('user_roles')
+            .select('users(*), role, is_owner')
+            .eq('course_id', courseId)
+            .eq('is_owner', true);
         if (error)
             throw new Error(`Couldn't fetch`)
     } catch (error) {

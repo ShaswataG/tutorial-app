@@ -1,0 +1,10 @@
+.courses {
+    padding: 2vw 10vw;
+}
+
+.courses > h1 {
+    text-align: center;
+    font-size: 4rem;
+    margin: 0.4rem 0;
+    color: rgb(99 102 241);
+}

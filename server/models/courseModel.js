@@ -72,6 +72,7 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
 
 const getCourses = async (query) => {
     console.log('courseModel.getCourses is getting called');
+    console.log(query);
     let { data, error } = await supabase
         .from('courses')
         .select('*')
@@ -89,6 +90,17 @@ const getCourse = async (courseId) => {
         .select('*')
         .eq('id', courseId);
     console.log(`courseModel.getCourse: 1`);
+    if (error)
+        throw new Error(error);
+    return data;
+}
+
+const getCourseAdmins = async (courseId) => {
+    let { data, error } = await supabase
+        .from('user_roles')
+        .select('*, users(username)')
+        .eq('course_id', courseId)
+        .eq('role', 'admin');
     if (error)
         throw new Error(error);
     return data;
@@ -204,6 +216,7 @@ module.exports = {
     createCourse,
     getCourses,
     getCourse,
+    getCourseAdmins,
     getCourseLearningPoints,
     getBlogs,
     getBlog,
