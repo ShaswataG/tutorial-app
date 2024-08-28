@@ -1,16 +1,4 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-
-// export default function Navbar() {
-//     return (
-//         <nav>
-//             <h1>Navbar</h1>
-//             <Link to="/register">Sign Up</Link>
-//             <Link to="/login">Login</Link>
-//             <Outlet />
-//         </nav>
-//     )
-// }
-
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -27,8 +15,15 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { isLoggedIn } from "../utils/auth";
 
-const pages = ['Products', 'Pricing', 'Blog'];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = ['About', 'Courses', 'Contact'];
+// const pages = [
+//     {
+//         item: 'About',
+//         handleClick: function() {
+            
+//         }
+//     }
+// ];
 const settings = [
     {
         item: 'Account',
@@ -45,7 +40,8 @@ const settings = [
     {
         item: 'Logout',
         handleClick: function() {
-            localStorage.removeItem('jwt_token')
+            localStorage.removeItem('jwt_token');
+            // window.location.reload();
         }
     }
 
@@ -73,7 +69,7 @@ function ResponsiveAppBar() {
 
     return (
     <>
-        <AppBar position="fixed" sx={{background: "rgb(99 102 241)"}}>
+        <AppBar position="fixed" sx={{background: "white", color: "rgb(99 102 241)"}}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -92,7 +88,7 @@ function ResponsiveAppBar() {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        Learniverse
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -126,7 +122,7 @@ function ResponsiveAppBar() {
                         >
                             {pages.map((page) => (
                             <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                <Typography textAlign="center">{page}</Typography>
+                                <Typography textAlign="center" href="/login">{page}</Typography>
                             </MenuItem>
                             ))}
                         </Menu>
@@ -148,16 +144,16 @@ function ResponsiveAppBar() {
                             textDecoration: 'none',
                         }}
                         >
-                        LOGO
+                        Learniverse
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
                             <Button
                             key={page}
-                            onClick={handleCloseNavMenu}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
+                            onClick={() =>{ }}
+                            sx={{ my: 2, color: 'rgb(99 102 241)', display: 'block' }}
                             >
-                            {page}
+                                {page}
                             </Button>
                         ))}
                     </Box>
@@ -195,7 +191,14 @@ function ResponsiveAppBar() {
                         :
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Login">
-                                <IconButton onClick={() => {navigate('/login')}} sx={{ p: 0 }}>
+                                <IconButton 
+                                    onClick={
+                                        () => {
+                                            navigate('/login');
+                                        }
+                                    } 
+                                    sx={{ p: 0 }}
+                                >
                                     <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                                 </IconButton>
                             </Tooltip>

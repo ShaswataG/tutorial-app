@@ -27,7 +27,7 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
         console.log(userLoggedIn);
         console.log(newCourseInfo);
         let { id } = userLoggedIn;
-        let { title, description, isPaid, price } = newCourseInfo;
+        let { title, description, level, isPaid, price } = newCourseInfo;
         isPaid = (isPaid === 'true') ? true : false;
         price = Number(price);
         console.log({
@@ -39,6 +39,7 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
             .insert({
                 title: title,
                 description: description,
+                level: level,
                 is_paid: isPaid,
                 price: price,
                 author_id: id
@@ -82,12 +83,29 @@ const getCourses = async (query) => {
 }
 
 const getCourse = async (courseId) => {
+    console.log(`courseModel.getCourse is called`);
     let { data, error } = await supabase
         .from('courses')
         .select('*')
         .eq('id', courseId);
+    console.log(`courseModel.getCourse: 1`);
     if (error)
         throw new Error(error);
+    return data;
+}
+
+const getCourseLearningPoints = async (courseId) => {
+    console.log(`courseModel.getCourseLearningPoints is called`);
+    let { data, error } = await supabase
+        .from('course_learning_points')
+        .select('*')
+        .eq('course_id', courseId);
+    console.log(`courseModel.getCourseLearningPoints: 1`);
+    if (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+    console.log(`courseModel.getCourseLearningPoints: 2`);
     return data;
 }
 
@@ -186,6 +204,7 @@ module.exports = {
     createCourse,
     getCourses,
     getCourse,
+    getCourseLearningPoints,
     getBlogs,
     getBlog,
     getLecture,

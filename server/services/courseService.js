@@ -10,7 +10,24 @@ const getCourses = async (query) => {
 }
 
 const getCourse = async (courseId) => {
-    return await courseModel.getCourse(courseId);
+    try {
+        console.log(`courseService.getCourse is getting called`);
+        let course = await courseModel.getCourse(courseId)
+        course = course[0];
+        console.log(`courseService.getCourse: 1`);
+        let courseLearningPoints = await courseModel.getCourseLearningPoints(courseId);
+        console.log(`courseService.getCourse: 2`);
+        courseLearningPoints = courseLearningPoints.map(courseLearningPoint => courseLearningPoint.point);
+        console.log(courseLearningPoints);
+        course = {
+            ...course,
+            courseLearningPoints: courseLearningPoints
+        }
+        console.log(course);
+        return course;
+    } catch (error) {
+        throw new Error(error.message);
+    }
 }
 
 const getBlogs = async (query) => {

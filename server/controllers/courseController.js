@@ -12,6 +12,16 @@ const createCourse = async (req, res) => {
     }
 }
 
+/* GET: http:localhost:4000/courses/:id */
+const getCourse = async (req, res) => {
+    try {
+        const data = await courseService.getCourse(req.params.id);
+        return res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+}
+
 /* GET: http://localhost:4000/courses */
 const getCourses = async (req, res) => {
     try {
@@ -19,6 +29,16 @@ const getCourses = async (req, res) => {
         return res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error });
+    }
+}
+
+/* PATCH: http://localhost:4000/courses/:id */
+const updateCourse = async (req, res) => {
+    try {
+        const data = await courseService.updateCourse(req.params.id);
+        return res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error })
     }
 }
 
@@ -76,6 +96,7 @@ const createLecture = async (req, res) => {
 
 module.exports = {
     createCourse,
+    getCourse,
     getCourses,
     getBlogs,
     getBlog,
