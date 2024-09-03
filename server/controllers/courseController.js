@@ -15,7 +15,28 @@ const createCourse = async (req, res) => {
 /* GET: http:localhost:4000/courses/:id */
 const getCourse = async (req, res) => {
     try {
+        console.log(`courseController.getCourse is called`);
         const data = await courseService.getCourse(req.params.id);
+        return res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+}
+
+/* GET: http://localhost:4000/courses/enrolledCourses */
+const getEnrolledCourses = async (req, res) => {
+    try {
+        console.log(`courseController.getEnrolledCourses is called`);
+        const data = await courseService.getEnrolledCourses(req.user);
+        return res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+}
+
+const getInstructedCourses = async (req, res) => {
+    try {
+        const data = await courseService.getInstructedCourses(req.user);
         return res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error });
@@ -100,6 +121,8 @@ module.exports = {
     createCourse,
     getCourse,
     getCourses,
+    getEnrolledCourses,
+    getInstructedCourses,
     getBlogs,
     getBlog,
     getLecture,

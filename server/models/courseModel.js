@@ -1,6 +1,7 @@
 const { query } = require('express');
 const { supabase } = require('../connect');
 const { REALTIME_SUBSCRIBE_STATES } = require('@supabase/supabase-js');
+const { errorMonitor } = require('nodemailer/lib/ses-transport');
 
 // const createCourse = async (userLoggedIn, newCourseInfo) => {
 //     let { title, description, isPaid, price } = newCourseInfo;
@@ -20,6 +21,20 @@ const { REALTIME_SUBSCRIBE_STATES } = require('@supabase/supabase-js');
 //         throw new Error(`Couldn't insert course`);
 //     return data;
 // }
+
+const createSection = async (userLoggedIn, newSectionInfo) => {
+    const { courseId, title, position } = newSectionInfo;
+    const data = await supabase
+        .from('sections')
+        .insert({
+            course_id: courseId,
+            title: title,
+            position: position
+        })
+    if (error)
+        throw new Error(error);
+    return data;
+}
 
 const createCourse = async (userLoggedIn, newCourseInfo) => {
     try {
@@ -90,6 +105,48 @@ const getCourse = async (courseId) => {
         .select('*')
         .eq('id', courseId);
     console.log(`courseModel.getCourse: 1`);
+    if (error)
+        throw new Error(error);
+    return data;
+}
+
+const getCourseContent= async (courseId) => {
+    let { data, error } = await supabase
+        .from('sections')
+        .select(`
+            id: title,
+            lectures: lectures(id, title, position)
+            blogs: blogs('id, title, position')
+        `)
+        .eq('course_id', courseId)
+        .order('position', { ascending: true });
+    if(error)
+        throw new Error(error);
+    return data;
+}
+
+const getEnrolledCourses = async (userLoggedIn) => {
+    console.log(`courseModel.getEnrolledCourses is called`);
+    let { data, error } = await supabase
+        .from('user_roles')
+        .select('courses(*)')
+        .match({
+            user_id: userLoggedIn.id,
+            role: 'student'
+        });
+    if (error)
+        throw new Error(error);
+    return data;
+}
+
+const getInstructedCourses = async (userLoggedIn) => {
+    let { data, error } = await supabase
+        .from('user_roles')
+        .select('courses(*)')
+        .match({
+            user_id: userLoggedIn.id,
+            role: 'admin'
+        });
     if (error)
         throw new Error(error);
     return data;
@@ -202,6 +259,7 @@ const insertLecture = async (userLoggedIn, newLecture) => {
         .from('lectures')
         .insert({
             course_id: Number(newLecture.course_id),
+            section_id: Number(newLecture.section_id),
             author_id: Number(userLoggedIn.id),
             title: newLecture.title,
             video_url: newLecture.video_url,
@@ -213,9 +271,13 @@ const insertLecture = async (userLoggedIn, newLecture) => {
 }
 
 module.exports = {
+    createSection,
     createCourse,
     getCourses,
     getCourse,
+    getCourseContent,
+    getEnrolledCourses,
+    getInstructedCourses,
     getCourseAdmins,
     getCourseLearningPoints,
     getBlogs,
