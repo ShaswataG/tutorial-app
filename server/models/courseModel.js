@@ -30,7 +30,7 @@ const createSection = async (userLoggedIn, newSectionInfo) => {
             course_id: courseId,
             title: title,
             position: position
-        })
+        });
     if (error)
         throw new Error(error);
     return data;
@@ -77,7 +77,7 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
                 course_id: courseId,
                 role: "admin",
                 is_owner: true
-            })
+            });
         console.log('data2', data2);
         return data;
     } catch (error) {
@@ -122,6 +122,35 @@ const getCourseContent= async (courseId) => {
         .order('position', { ascending: true });
     if(error)
         throw new Error(error);
+    return data;
+}
+
+const getCourseSections = async (courseId) => {
+    // console.log('courseModel.getCourseSections');
+    let { data, error } = await supabase
+        .from('sections')
+        .select('*')
+        .eq('course_id', courseId)
+        .order('position', { ascending: true });
+    if (error)
+        throw new Error(error);
+    // console.log('data', data);
+    return data;
+}
+
+const getAllSectionContent = async (sectionId) => {
+    console.log(`courseModel.getSectionContent is being called`);
+    console.log('sectionId: ', sectionId);
+    let { data, error } = await supabase
+        .from('section_content')
+        .select('*, lectures(*), blogs(*)')
+        .eq('section_id', sectionId)
+        .order('position', { ascending: true });
+    if (error) {
+        console.error(error);
+        throw new Error(error);
+    }
+    console.log(data[0]);
     return data;
 }
 
@@ -175,6 +204,35 @@ const getCourseLearningPoints = async (courseId) => {
         throw new Error(error.message);
     }
     console.log(`courseModel.getCourseLearningPoints: 2`);
+    return data;
+}
+
+const insertSectionContent = async (sectionId, title, position) => {
+    console.log('sectionId', sectionId);
+    let { data, error } = await supabase
+        .from('section_content')
+        .insert({
+            section_id: sectionId,
+            title: title,
+            position: position
+        })
+        .select();
+    if (error) {
+        console.error(error);
+        throw new Error(error);
+    }
+    return data;
+}
+
+const getSectionContent = async (sectionId) => {
+    let { data, error } = await supabase
+        .from('section_content')
+        .select('*, blogs(*), lectures(*)')
+        .eq('section_id', sectionId)
+        .order('position', { ascending: true });
+    if (error)
+        throw new Error(error);
+    // console.log('data: ', data);
     return data;
 }
 
@@ -246,6 +304,7 @@ const insertBlog = async (userLoggedIn, newBlog) => {
         .insert({
             course_id: Number(newBlog.course_id),
             author_id: Number(userLoggedIn.id),
+            section_content_id: newBlog.section_content_id,
             title: newBlog.title,
             content: newBlog.content,
         });
@@ -273,9 +332,13 @@ const insertLecture = async (userLoggedIn, newLecture) => {
 module.exports = {
     createSection,
     createCourse,
+    insertSectionContent,
     getCourses,
     getCourse,
     getCourseContent,
+    getCourseSections,
+    getSectionContent,
+    getAllSectionContent,
     getEnrolledCourses,
     getInstructedCourses,
     getCourseAdmins,

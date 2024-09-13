@@ -1,10 +1,10 @@
-.course-card {
-    /* height: 28rem;
-    width: 28rem; */
-    height: 40vh;
-    width: 25vw;
-    max-width: 460px;
-    min-width: 360px;
+.dashboard {
+    padding: 2vw 10vw;
+}
+
+.enrolled--course-card {
+    height: 28rem;
+    width: 28rem;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -19,7 +19,7 @@
     border: 0px none #000000;
 }
 
-.course-card--info {
+.enrolled--course-card-info {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -28,17 +28,12 @@
     box-sizing: border-box;
 }
 
-.course-card--title {
+.enrolled--course-card-title {
     font-size: 1.6rem;
     font-weight: 600;
 }
 
-.course-card--admins {
+.enrolled--course-card-admins {
     font-size: 1.6rem;
     font-weight: 300;
-}
-
-.course-card--price {
-    font-size: 1.6rem;
-    font-weight: 600
 }

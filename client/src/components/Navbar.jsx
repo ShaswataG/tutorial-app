@@ -15,40 +15,73 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { isLoggedIn } from "../utils/auth";
 
-const pages = ['About', 'Courses', 'Contact'];
-// const pages = [
-//     {
-//         item: 'About',
-//         handleClick: function() {
+// const navigate = useNavigate();
+
+// const pages = ['About', 'Courses', 'Contact'];
+// // const pages = [
+// //     {
+// //         item: 'About',
+// //         handleClick: function() {
             
+// //         }
+// //     }
+// // ];
+// const settings = [
+//     {
+//         item: 'Account',
+//         handleClick: function () {
+//             // <Redirect to='/'/>
+//         }
+//     },
+//     {
+//         item: 'Dashboard',
+//         handleClick: function () {
+//             navigate('/dashboard');
+//         }
+//     },
+//     {
+//         item: 'Logout',
+//         handleClick: function() {
+//             localStorage.removeItem('jwt_token');
+//             // window.location.reload();
 //         }
 //     }
-// ];
-const settings = [
-    {
-        item: 'Account',
-        handleClick: function () {
-            // <Redirect to='/'/>
-        }
-    },
-    {
-        item: 'Dashboard',
-        handleClick: function () {
-            // <Redirect to='/' />
-        }
-    },
-    {
-        item: 'Logout',
-        handleClick: function() {
-            localStorage.removeItem('jwt_token');
-            // window.location.reload();
-        }
-    }
-
-]
+// ]
 
 function ResponsiveAppBar() {
+
     const navigate = useNavigate();
+
+    const pages = ['About', 'Courses', 'Contact'];
+    // const pages = [
+    //     {
+    //         item: 'About',
+    //         handleClick: function() {
+                
+    //         }
+    //     }
+    // ];
+    const settings = [
+        {
+            item: 'Account',
+            handleClick: function () {
+                // <Redirect to='/'/>
+            }
+        },
+        {
+            item: 'Dashboard',
+            handleClick: function () {
+                navigate('/dashboard');
+            }
+        },
+        {
+            item: 'Logout',
+            handleClick: function() {
+                localStorage.removeItem('jwt_token');
+                window.location.reload();
+            }
+        }
+    ]
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 

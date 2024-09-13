@@ -23,6 +23,11 @@
     border-bottom: solid black 1px; */
 }
 
+.login-warning {
+    height: 20px;
+    color: red;
+}
+
 .login-form button {
     width: 60%;
     background-color: rgb(99 102 241);

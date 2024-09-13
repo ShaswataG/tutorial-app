@@ -61,7 +61,7 @@ const updateCourse = async (req, res) => {
         const data = await courseService.updateCourse(req.params.id);
         return res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ error: error })
+        res.status(500).json({ error: error });
     }
 }
 

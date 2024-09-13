@@ -9,6 +9,7 @@ import './styles/home/courses/course-container.css';
 import './styles/home/courses/course-card.css';
 import './styles/registerForm.css';
 import './styles/loginForm.css';
+import './styles/dashboard/dashboard.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

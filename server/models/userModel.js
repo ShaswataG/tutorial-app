@@ -62,7 +62,7 @@ const insertUser = async (newUserInfo) => {
                 email: newUserInfo.email,
                 password: newUserInfo.password,
                 is_verified: false
-            })
+            });
         if (error) {
             console.error(error.message);
             throw new Error(error);

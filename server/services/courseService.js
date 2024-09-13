@@ -32,24 +32,59 @@ const getCourses = async (query) => {
 
 const getCourse = async (courseId) => {
     try {
-        console.log(`courseService.getCourse is being called`);
+        // console.log(`courseService.getCourse is being called`);
         let course = await courseModel.getCourse(courseId)
         course = course[0];
-        console.log(`courseService.getCourse: 1`);
+        // console.log(`courseService.getCourse: 1`);
         let courseLearningPoints = await courseModel.getCourseLearningPoints(courseId);
-        console.log(`courseService.getCourse: 2`);
+        // console.log(`courseService.getCourse: 2`);
         courseLearningPoints = courseLearningPoints.map(courseLearningPoint => courseLearningPoint.point);
-        console.log(courseLearningPoints);
+        // console.log(courseLearningPoints);
         let courseAdmins = await courseModel.getCourseAdmins(courseId);
-        courseAdmins = courseAdmins.map(courseAdmin => admin.users.username);
-        let courseContent = await courseModel.getCourseContent(courseId);
-        courseContent = courseContent
+        courseAdmins = courseAdmins.map(courseAdmin => courseAdmin.users.username);
+        // console.log(courseAdmins);
+        // let courseContent = await courseModel.getCourseContent(courseId);
+        // courseContent = courseContent;
+        let courseSections = await courseModel.getCourseSections(courseId);
+        console.log('courseSections: ', courseSections);
+        console.log('test');
+        await Promise.all(courseSections.map(async (courseSection, index) => {
+            let data = await courseModel.getSectionContent(courseSection.id);
+            // console.log(data);
+            data = data.map(item => {
+                console.log('item', item);
+                let content = {};
+
+                if (item.blogs.length > 0) {
+                    content = {
+                        ...item.blogs[0],
+                        type: "blog"
+                    }
+                } else if (item.lectures.length > 0) {
+                    content = {
+                        ...item.lectures[0],
+                        type: "lecture"
+                    }
+                }
+
+                return {
+                    ...item,
+                    ...content,
+                    blogs: undefined,
+                    lectures: undefined
+                }
+            })
+            courseSections[index] = {
+                ...courseSection,
+                content: data
+            }
+        }));
         course = {
             ...course,
             courseAdmins,
-            courseLearningPoints
+            courseLearningPoints,
+            courseSections
         }
-        console.log(course);
         return course;
     } catch (error) {
         throw new Error(error.message);
@@ -62,7 +97,7 @@ const getEnrolledCourses = async (userLoggedIn) => {
         let enrolledCourses = await courseModel.getEnrolledCourses(userLoggedIn);
         enrolledCourses = enrolledCourses.map(enrolledCourse => {
             return enrolledCourse.courses;
-        })
+        });
         enrolledCourses = await Promise.all(enrolledCourses.map(async (enrolledCourse) => {
             let admins = await courseModel.getCourseAdmins(enrolledCourse.id);
             admins = admins.map(admin => admin.users.username);
@@ -70,7 +105,7 @@ const getEnrolledCourses = async (userLoggedIn) => {
                 ...enrolledCourse,
                 admins
             };
-        }))
+        }));
         console.log(enrolledCourses);
         return enrolledCourses;
     } catch (error) {
@@ -145,15 +180,22 @@ const getLecture = async (userLoggedIn, lectureId) => {
 
 const createBlog = async (userLoggedIn, newBlog) => {
     try {
+        const { course_id, title, position, section_id } = newBlog;
         console.log(`courseService.createBlog is being called`);
         const checkUserRoles = await courseModel.checkUserRoles(userLoggedIn, newBlog);
         if (checkUserRoles.length < 1) {
             throw new Error(`You don't have write access to this course`);
         }
+        let insertedSectionContent = await courseModel.insertSectionContent(section_id, title, position);
+        console.log('sectionContent', insertedSectionContent);
+        newBlog = {
+            ...newBlog,
+            section_content_id: insertedSectionContent[0].id
+        }
         if (await courseModel.insertBlog(userLoggedIn, newBlog) === true)
             return true;
     } catch (error) {
-        console.error(error.message);
+        console.error(error);
         throw new Error(error.message);
     }
 }

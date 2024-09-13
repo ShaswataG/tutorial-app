@@ -1,6 +1,7 @@
 import Textfield from "../components/Login/Textfield";
 import SubmitButton from "../components/Login/SubmitButton";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -8,11 +9,13 @@ import Button from '@mui/material/Button';
 const baseURL = 'http://localhost:4000';
 
 export default function Login() {
+    const navigate = useNavigate();
 
     const [user, setUser] = useState({
         email: "",
         password: ""
-    })
+    });
+    const [loginFailed, setLoginFailed] = useState(false);
 
     const handleChange = async (event) => {
         const { name, value } = event.target;
@@ -30,14 +33,18 @@ export default function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         console.log(user);
-        const response = await axios.post(baseURL + '/users/login', user);
-        // console.log(response.data);
-        const token = response.data;
-        localStorage.setItem('jwt_token', token);
-        console.log(localStorage.getItem('jwt_token'));
+        try {
+            const response = await axios.post(baseURL + '/users/login', user);
+            // console.log(response.data);
+            const token = response.data;
+            localStorage.setItem('jwt_token', token);
+            setLoginFailed(false);
+            navigate('/dashboard');
+            console.log(localStorage.getItem('jwt_token'));
+        } catch (error) {
+            setLoginFailed(true);
+        }
     }
-
-
     
     return (
         <>
@@ -86,7 +93,10 @@ export default function Login() {
                     }
                 />
                 {/* <SubmitButton handleSubmit={handleSubmit} text="Sign up" /> */}
-                <Button variant="contained" onClick={handleSubmit}>Sign up</Button>
+                <span className="login-warning">
+                    {loginFailed && <p>Login failed</p>}
+                </span>
+                <Button variant="contained" onClick={handleSubmit}>Sign in</Button>
                 <div className="boundary"></div>
                 <p>Don't have an account? <a href="/register">Sign up</a></p>
             </form>
