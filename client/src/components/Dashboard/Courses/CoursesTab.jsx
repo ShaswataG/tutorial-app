@@ -24,7 +24,6 @@ export default function ScrollableTabsButtonForce(props) {
       >
         <Tab label="Enrolled Courses" value="enrolledCourses" />
         <Tab label="Instructed Courses" value="instructedCourses" />
-        <Tab label="Instructed Courses" value="instructedCourses" />
         <Tab label="Wishlist" value="wishlist" />
         <Tab label="Archived" value="archived" />
       </Tabs>
