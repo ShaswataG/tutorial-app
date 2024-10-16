@@ -10,6 +10,8 @@ import './styles/home/courses/course-card.css';
 import './styles/registerForm.css';
 import './styles/loginForm.css';
 import './styles/dashboard/dashboard.css';
+import './styles/courseDetails/courseDetails.css';
+import './styles/blogEditor/blogEditor.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

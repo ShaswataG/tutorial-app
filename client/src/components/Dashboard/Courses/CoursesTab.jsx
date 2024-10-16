@@ -13,7 +13,7 @@ export default function ScrollableTabsButtonForce(props) {
 
 
   return (
-    <Box sx={{  bgcolor: 'background.paper', padding: '5vw 0' }}>
+    <Box sx={{  bgcolor: 'background.paper', padding: '3vw 0' }}>
       <Tabs
         value={props.category}
         onChange={props.changeCategory}
@@ -23,6 +23,7 @@ export default function ScrollableTabsButtonForce(props) {
         aria-label="scrollable force tabs example"
       >
         <Tab label="Enrolled Courses" value="enrolledCourses" />
+        <Tab label="Instructed Courses" value="instructedCourses" />
         <Tab label="Instructed Courses" value="instructedCourses" />
         <Tab label="Wishlist" value="wishlist" />
         <Tab label="Archived" value="archived" />

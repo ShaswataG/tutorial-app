@@ -1,0 +1,17 @@
+.course-details {
+    margin: 100px;
+}
+
+.course-details--header > h1 {
+    margin: 10px 0;
+}
+
+.course-details--header > h1:first-of-type {
+    font-size: 6rem;
+    font-weight: 500;
+    margin: 20px 0;
+}
+
+.course-details--header > p {
+    font-size: 1.7rem;
+}

@@ -1,5 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import CoursesTab from "../components/Dashboard/Courses/CoursesTab";
 import CoursesContainer from "../components/Dashboard/Courses/CoursesContainer";
+// import Button from "../components/Dashboard/Button";
+import Button from "../helpers/Button";
 import axios from "axios";
 import { useEffect, useState } from 'react';
 
@@ -13,6 +16,8 @@ export default function Dashboard() {
 
     //     }
     // }
+
+    const navigate = useNavigate();
 
     const [category, setCategory] = useState('enrolledCourses');
 
@@ -40,17 +45,22 @@ export default function Dashboard() {
         }
     }
 
+    const handleInstructedCoursesButtonClick = () => {
+        navigate(`/dashboard/instructedCourses`);
+    }
+
     useEffect(() => {
         fetchCourses();
     }, [category])
 
     return (
         <main className="dashboard">
-            <h1>Dashboard</h1>
+            <h1>My Dashboard</h1>
+            <Button text="Instructed Courses" handleClick={handleInstructedCoursesButtonClick}/>
             <CoursesTab category={category} changeCategory={changeCategory} fetchSuccess={fetchSuccess} />
             {loading && <h1>Loading courses...</h1>}
             {!loading && fetchSuccess && <CoursesContainer courses={courses} />}
-            {!loading && !fetchSuccess && <h1>Couldn't fetch courses</h1>}
+            {!loading && !fetchSuccess && <h1>Couldn't load courses</h1>}
         </main>
     )
 }
