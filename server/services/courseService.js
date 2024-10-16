@@ -58,12 +58,12 @@ const getCourse = async (courseId) => {
                 if (item.blogs.length > 0) {
                     content = {
                         ...item.blogs[0],
-                        type: "blog"
+                        type: "blog",
                     }
                 } else if (item.lectures.length > 0) {
                     content = {
                         ...item.lectures[0],
-                        type: "lecture"
+                        type: "lecture",
                     }
                 }
 
@@ -116,6 +116,7 @@ const getEnrolledCourses = async (userLoggedIn) => {
 
 const getInstructedCourses = async (userLoggedIn) => {
     try {
+        console.log('inside courseService.getInstructedCourses is executed');
         let instructedCourses = await courseModel.getInstructedCourses(userLoggedIn);
         instructedCourses = instructedCourses.map(instructedCourse => {
             return instructedCourse.courses;

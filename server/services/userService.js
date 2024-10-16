@@ -115,6 +115,7 @@ const login = async (user) => {
             throw new Error('Incorrect password');
         }
     } catch (error) {
+        console.log(error);
         throw new Error(error);
     }
 }

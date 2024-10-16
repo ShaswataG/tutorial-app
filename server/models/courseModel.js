@@ -227,7 +227,7 @@ const insertSectionContent = async (sectionId, title, position) => {
 const getSectionContent = async (sectionId) => {
     let { data, error } = await supabase
         .from('section_content')
-        .select('*, blogs(*), lectures(*)')
+        .select('blogs(*), lectures(*)')
         .eq('section_id', sectionId)
         .order('position', { ascending: true });
     if (error)
@@ -246,14 +246,16 @@ const getBlogs = async (query) => {
     return data;
 }
 
-const getBlog = async (userLoggedIn, blogId) => {
+const getBlog = async (blogId) => {
     const { data, error } = await supabase
         .from('blogs')
         .select('*')
         .eq('id', blogId)
         .single();
-    if (error)
+    if (error) {
+        console.error(error);
         throw new Error(`Couldn't fetch blog`);
+    }
     return data;
 }
 

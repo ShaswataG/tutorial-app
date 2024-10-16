@@ -36,6 +36,7 @@ const getEnrolledCourses = async (req, res) => {
 
 const getInstructedCourses = async (req, res) => {
     try {
+        console.log('inside courseController.getInstructedCourses is called');
         const data = await courseService.getInstructedCourses(req.user);
         return res.status(200).json(data);
     } catch (error) {
