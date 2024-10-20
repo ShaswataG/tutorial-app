@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import BlogEditor from './pages/BlogEditor';
 import Blog from './pages/Blog';
 import InstructedCourses from './pages/InstructedCourses';
+import CreateCourse from './pages/CreateCourse';
 
 function App() {
   return (
@@ -29,7 +30,8 @@ function App() {
               }
             />
             <Route path='/dashboard/instructedCourses' element={<InstructedCourses />}/>
-          </Route>
+            <Route path='/dashboard/instructedCourses/createCourse' element={<CreateCourse />} />
+           </Route>
           {/* <Route 
               path='/dashboard' 
               element={

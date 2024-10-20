@@ -58,8 +58,12 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
                 is_paid: isPaid,
                 price: price,
                 author_id: id
-            });
-        console.log('data', data);
+            })
+            .select('id');
+        if (data) {
+            console.log('inserted course')
+            console.log('data', data);
+        }
         let { data:data1, error:error1 } = await supabase
             .from('courses')
             .select('*')
@@ -83,6 +87,55 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
     } catch (error) {
         throw new Error(error);
     }
+}
+
+const insertCourse = async (userLoggedIn, newCourseInfo) => {
+    try {
+        let { title, description, isPaid, price, category, level } = newCourseInfo;
+        let { data, error } = await supabase
+            .from('courses')
+            .insert({
+                title: title,
+                description: description,
+                is_paid: isPaid,
+                price: price,
+                category: category,
+                level: level
+            })
+            .select('id');
+        return data;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+const insertOwner = async (userId, courseId) => {
+    const { data, error } = await supabase
+        .from('user_roles')
+        .upsert({
+            user_id: userId,
+            course_id: courseId,
+            role: 'admin',
+            is_owner: true
+        },
+        {
+            onConflict: 'user_id, course_id'
+        });
+    if (error)
+        throw new Error(error.message);
+    return true;
+}
+
+const insertCourseLearningPoint = async (point, courseId) => {
+    const { data, error } = await supabase
+        .from('course_learning_points')
+        .insert({
+            course_id: courseId,
+            point: point
+        })
+    if (error)
+        throw new Error(error);
+    return data;
 }
 
 const getCourses = async (query) => {
@@ -334,6 +387,9 @@ const insertLecture = async (userLoggedIn, newLecture) => {
 module.exports = {
     createSection,
     createCourse,
+    insertCourse,
+    insertOwner,
+    insertCourseLearningPoint,
     insertSectionContent,
     getCourses,
     getCourse,

@@ -5,9 +5,33 @@ const createSection = async (userLoggedIn, sectionInfo) => {
     return await courseModel.createSection(userLoggedIn, sectionInfo)
 }
 
+// const createCourse = async (userLoggedIn, courseInfo) => {
+//     console.log('courseService.createCourse is getting called');
+//     return await courseModel.createCourse(userLoggedIn, courseInfo);
+// }
+
 const createCourse = async (userLoggedIn, courseInfo) => {
-    console.log('courseService.createCourse is getting called');
-    return await courseModel.createCourse(userLoggedIn, courseInfo);
+    try {
+        let { title, description, isPaid, price, category, level, learningPoints } = newCourseInfo;
+        isPaid = (isPaid === "true") ? true : false;
+        if (isPaid === false)
+            price = 0;
+        let newCourseInserted = await courseModel.insertCourse(userLoggedIn, {
+            title: title,
+            description: description,
+            isPaid: isPaid,
+            price: price,
+            category: category,
+            level: level
+        })
+        let courseId = newCourseInserted[0].id;
+        await courseModel.insertOwner(userLoggedIn.id, courseId);
+        await Promise.all(learningPoints.forEach(async learningPoint => {
+            await courseModel.insertCourseLearningPoint(learningPoint, courseId);
+        }));
+    } catch (error) {
+        throw new Error(error);
+    }
 }
 
 const getCourses = async (query) => {

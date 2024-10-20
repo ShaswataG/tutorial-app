@@ -171,7 +171,6 @@ const makeAdmin = async (userId, courseId) => {
         {
             onConflict: 'user_id, course_id'
         });
-  
     if (error)
         throw new Error(error.message);
     return true;

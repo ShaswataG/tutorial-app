@@ -15,7 +15,7 @@ export default function InstructedCourses() {
     const [isLoading, setIsLoading] = useState(true);
 
     const handleCreateCourseButtonClick = () => {
-        navigate('/')
+        navigate('/');
     }
 
     const fetchCourses = async () => {
@@ -42,7 +42,7 @@ export default function InstructedCourses() {
     return (
         <main className="instructed-courses">
             <h1>My Courses</h1>
-            <Button text="Create new course" handleClick={console.log('test')}/>
+            <Button text="Create new course" handleClick={() => {navigate(`/dashboard/instructedCourses/createCourse`)}}/>
             {isLoading && <h1>Loading courses...</h1>}
             {!isLoading && fetchSuccess && <CoursesContainer courses={courses}/>}
             {!isLoading && !fetchSuccess && <h1>Couldn't load courses</h1>}

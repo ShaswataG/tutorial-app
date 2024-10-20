@@ -1,0 +1,13 @@
+.create-course-form {
+    padding-top: 100px;
+    margin: auto auto;
+    width: 60vw;
+    max-width: 50rem;
+}
+
+.course-learning-points-container {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
