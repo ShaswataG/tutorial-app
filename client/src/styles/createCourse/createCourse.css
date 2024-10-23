@@ -11,3 +11,8 @@
     flex-direction: column;
     gap: 2rem;
 }
+
+.create-course-warning {
+    color: red;
+    height: 3rem;
+}

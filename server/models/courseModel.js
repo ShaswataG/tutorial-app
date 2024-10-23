@@ -91,6 +91,8 @@ const createCourse = async (userLoggedIn, newCourseInfo) => {
 
 const insertCourse = async (userLoggedIn, newCourseInfo) => {
     try {
+        console.log('inside courseModel.insertCourse');
+        console.log('newCourseInfo: ', newCourseInfo);
         let { title, description, isPaid, price, category, level } = newCourseInfo;
         let { data, error } = await supabase
             .from('courses')
@@ -100,11 +102,15 @@ const insertCourse = async (userLoggedIn, newCourseInfo) => {
                 is_paid: isPaid,
                 price: price,
                 category: category,
-                level: level
+                level: level,
+                author_id: userLoggedIn.id
             })
-            .select('id');
+            .select();
+        console.log('data: ', data);
         return data;
     } catch (error) {
+        console.log('hello')
+        console.error(error.message);
         throw new Error(error);
     }
 }

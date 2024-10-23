@@ -67,6 +67,7 @@ const insertOtp = async (email) => {
 const verifyUser = async ({ email, otp }) => {
     try {
         console.log('userService.verifyUser is being called');
+        console.log('email: ', email);
         const otpEntry = await userModel.getOtpEntry(email);
         console.log('Otp entry', otpEntry);
         console.log(`new Date(): `, new Date(Date.now()));

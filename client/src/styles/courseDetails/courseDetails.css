@@ -15,3 +15,13 @@
 .course-details--header > p {
     font-size: 1.7rem;
 }
+
+.course-details--learning-points ul {
+    list-style: none;
+}
+
+.course-details--learning-points li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

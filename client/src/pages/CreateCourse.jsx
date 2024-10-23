@@ -3,9 +3,13 @@ import CourseLearningPointsContainer from "../components/CreateCourse/CourseLear
 import DefaultTextField from "../components/CreateCourse/DefaulTextField";
 import { useState } from "react";
 import '../styles/createCourse/createCourse.css';
+import axios from "axios";
+
+const baseURL = 'http://localhost:4000';
 
 export default function CreateCourse() {
 
+    const [createCourseFailed, setCreateCourseFailed] = useState(false);
     const [courseInfo, setCourseInfo] = useState({
         title: "",
         description: "",
@@ -54,6 +58,21 @@ export default function CreateCourse() {
 
     const handleSubmit = async () => {
         console.log('form submitted');
+        console.log("localStorage.getItem('jwt_token')", localStorage.getItem('jwt_token'));
+        try {
+            console.log('courseInfo: ', courseInfo);
+            const response = axios.post(baseURL+'/courses', courseInfo, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwt_token')}`
+                    }
+            });
+            console.log('response', response);
+
+        } catch (error) {
+            console.log('error: couse creation failed');
+            setCreateCourseFailed(true);
+        }
     }
 
     return (
@@ -139,6 +158,13 @@ export default function CreateCourse() {
                         justifyContent: "flex-end"
                     }}
                 >
+                    <div className="create-course-warning">
+                        {
+                            createCourseFailed
+                            &&
+                            <span>Couldn't create course</span>
+                        }
+                    </div>
                     <Button 
                         sx={{
                             mt: "2.4rem",

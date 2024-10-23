@@ -19,7 +19,7 @@ export default function CourseDetails() {
         async function fetchCourse() {
             try {
                 const response = await axios.get(`${baseURL}/courses/${id}`);
-                console.log(response.data);  
+                console.log(response.data);
                 setCourse(response.data);
                 setLoading(false);
                 setLoadFail(false);

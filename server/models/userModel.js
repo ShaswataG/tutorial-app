@@ -73,6 +73,7 @@ const insertUser = async (newUserInfo) => {
 
 const getOtpEntry = async (email) => {
     console.log('userModel.getOtpEntry is being called');
+    console.log('email: ', email);
     const { data, error } = await supabase
         .from('otp')
         .select('*')

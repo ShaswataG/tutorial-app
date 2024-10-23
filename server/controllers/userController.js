@@ -28,6 +28,8 @@ const createUser = async (req, res) => {
 
 const verifyMail = async (req, res) => {
     try {
+        console.log('inside userController.verifyMail');
+        console.log('req.body: ', req.body);
         const data = await userService.verifyUser(req.body);
         res
           .status(200)

@@ -3,11 +3,13 @@ const courseService = require('../services/courseService');
 
 /* POST: http://localhost:4000/courses */
 const createCourse = async (req, res) => {
+    console.log('inside courseController.createCourse');
     try {
         console.log('courseController.createCourse is getting called');
         const data = await courseService.createCourse(req.user, req.body);
         return res.status(200).json(data);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error });
     }
 }
@@ -30,6 +32,7 @@ const getEnrolledCourses = async (req, res) => {
         const data = await courseService.getEnrolledCourses(req.user);
         return res.status(200).json(data);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error });
     }
 }

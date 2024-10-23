@@ -12,10 +12,19 @@ const createSection = async (userLoggedIn, sectionInfo) => {
 
 const createCourse = async (userLoggedIn, courseInfo) => {
     try {
-        let { title, description, isPaid, price, category, level, learningPoints } = newCourseInfo;
+        console.log('courseInfo: ', courseInfo);
+        let { title, description, isPaid, price, category, level, learningPoints } = courseInfo;
         isPaid = (isPaid === "true") ? true : false;
         if (isPaid === false)
             price = 0;
+        console.log({
+            title: title,
+            description: description,
+            isPaid: isPaid,
+            price: price,
+            category: category,
+            level: level
+        })
         let newCourseInserted = await courseModel.insertCourse(userLoggedIn, {
             title: title,
             description: description,
@@ -24,12 +33,17 @@ const createCourse = async (userLoggedIn, courseInfo) => {
             category: category,
             level: level
         })
+        console.log('newCourseInserted: ', newCourseInserted);
         let courseId = newCourseInserted[0].id;
         await courseModel.insertOwner(userLoggedIn.id, courseId);
-        await Promise.all(learningPoints.forEach(async learningPoint => {
+        console.log('learningPoints: ', learningPoints);
+        learningPoints.forEach(async learningPoint => {
+            console.log(learningPoint);
             await courseModel.insertCourseLearningPoint(learningPoint, courseId);
-        }));
+        });
+        console.log('test');
     } catch (error) {
+        console.error(error);
         throw new Error(error);
     }
 }

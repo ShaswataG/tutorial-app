@@ -9,7 +9,7 @@ export default function CourseLearningPoints(props) {
             if (props.points)
             return props.points.map(point => {
                 return (
-                    <li><DoneIcon />{point}</li>
+                    <li><DoneIcon /><span>{point}</span></li>
                 )
             })
         })
