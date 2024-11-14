@@ -10,6 +10,7 @@ const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
 const { sendOtp } = require('./emailService');
 const { captureRejectionSymbol } = require('events');
+const courseService = require('../services/courseService');
 
 const register = async (userInfo) => {
     const { username, email, password } = userInfo;
@@ -96,7 +97,10 @@ const login = async (user) => {
             .select('*')
             .eq('email', email)
             .single();
-        console.log(checkUserExists, error1);
+        let instructedCourses = await courseService.getInstructedCourses(checkUserExists);
+        let enrolledCourses = await courseService.getEnrolledCourses(checkUserExists);
+        console.log('instructedCourses: ', instructedCourses);
+        // console.log(checkUserExists, error1);
         if (checkUserExists.length == 0) {
             console.log('Email not registered');
             throw new Error('Email not registered');
@@ -107,10 +111,18 @@ const login = async (user) => {
             const accessToken =  jwt.sign({
                 id: checkUserExists.id,
                 username: checkUserExists.username,
-                email: checkUserExists.email 
+                email: checkUserExists.email,
             }, jwtsecret);
+            const data = {
+                token: accessToken,
+                id: checkUserExists.id,
+                username: checkUserExists.username,
+                email: checkUserExists.email,
+                instructedCourses: instructedCourses,
+                enrolledCourses: enrolledCourses
+            }
             console.log('Access Token: ', accessToken);
-            return accessToken;
+            return data;
         } else {
             throw new Error('Incorrect password');
         }

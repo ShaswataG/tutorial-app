@@ -36,7 +36,7 @@ export default function Login() {
         try {
             const response = await axios.post(baseURL + '/users/login', user);
             // console.log(response.data);
-            const token = response.data;
+            const token = response.data.token;
             localStorage.setItem('jwt_token', token);
             setLoginFailed(false);
             navigate('/dashboard');
