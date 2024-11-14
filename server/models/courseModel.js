@@ -165,7 +165,7 @@ const getCourse = async (courseId) => {
         .eq('id', courseId);
     console.log(`courseModel.getCourse: 1`);
     if (error)
-        throw new Error(error);
+        throw new Error(error.message);
     return data;
 }
 

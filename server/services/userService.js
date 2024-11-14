@@ -112,11 +112,10 @@ const login = async (user) => {
             console.log('Access Token: ', accessToken);
             return accessToken;
         } else {
-            console.log('Incorrect password');
             throw new Error('Incorrect password');
         }
     } catch (error) {
-        console.log(error);
+        console.error(error.message);
         throw new Error(error);
     }
 }

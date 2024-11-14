@@ -21,6 +21,7 @@ const getCourse = async (req, res) => {
         const data = await courseService.getCourse(req.params.id);
         return res.status(200).json(data);
     } catch (error) {
+        console.error(error.message);
         res.status(500).json({ error: error });
     }
 }

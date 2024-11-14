@@ -14,7 +14,7 @@ export default function CreateCourse() {
         title: "",
         description: "",
         isPaid: false,
-        price: 0,
+        price: 0    ,
         learningPoints: ["", "", ""],
         level: "beginner",
         category: "",

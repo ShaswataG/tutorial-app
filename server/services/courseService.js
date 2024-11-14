@@ -14,7 +14,7 @@ const createCourse = async (userLoggedIn, courseInfo) => {
     try {
         console.log('courseInfo: ', courseInfo);
         let { title, description, isPaid, price, category, level, learningPoints } = courseInfo;
-        isPaid = (isPaid === "true") ? true : false;
+        // isPaid = (isPaid === "true") ? true : false;
         if (isPaid === false)
             price = 0;
         console.log({
