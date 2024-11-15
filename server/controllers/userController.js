@@ -9,7 +9,7 @@ const login = async (req, res) => {
     } catch (error) {
         res
           .status(500)
-          .json({ error: error });
+          .json({ message: error.message });
     }
 }
 
@@ -22,7 +22,7 @@ const createUser = async (req, res) => {
     } catch (error) {
         res
           .status(500)
-          .json({error: error});
+          .json({ message: error.message });
     }
 }
 
@@ -37,7 +37,7 @@ const verifyMail = async (req, res) => {
     } catch (error) {
         res
           .status(500)
-          .json({ error: error });
+          .json({ message: error.message });
     }
 }
 
@@ -50,7 +50,7 @@ const getUsers = async (req, res) => {
     } catch (error) {
         res
           .status(500)
-          .json({error});
+          .json({ message: error.message });
     }
 }
 
@@ -63,7 +63,7 @@ const getUser = async (req, res) => {
     } catch (error) {
         res
           .status(500)
-          .json({error: error});
+          .json({ message: error.message });
     }
 }
 
@@ -76,7 +76,7 @@ const updateUser = async (req, res) => {
     } catch (error) {
         res
           .status(500)
-          .json({ error: error });
+          .json({ message: error.message });
     }
 }
 
@@ -89,7 +89,7 @@ const deleteUser = async (req, res) => {
     } catch (error) {
         res
           .status(500)
-          .json({ error: error });
+          .json({ message: error.message });
     }
 }
 
@@ -98,7 +98,7 @@ const addAdmin = async (req, res) => {
         const data = await userService.makeAdmin(req.user, req.body.user_id, req.body.course_id);
         return res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ error: error });
+        res.status(500).json({ message: error.message });
     }
 }
 

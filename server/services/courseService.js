@@ -254,6 +254,21 @@ const createLecture = async (userLoggedIn, newLecture) => {
     }
 }
 
+const isAdmin = async (userLoggedIn, courseId) => {
+    try {
+        const checkUserAuth = await courseModel.isAdmin(userLoggedIn, courseId);
+        if (checkUserAuth && checkUserAuth.length < 1) {
+            throw new Error(`User doesn't have write access`);
+        } else {
+            return {
+                isAdmin: true
+            }
+        }
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     createSection,
     createCourse,
@@ -265,5 +280,6 @@ module.exports = {
     getBlog,
     createBlog,
     getLecture,
-    createLecture
+    createLecture,
+    isAdmin
 }

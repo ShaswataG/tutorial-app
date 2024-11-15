@@ -95,29 +95,33 @@ const login = async (user) => {
         let { data:checkUserExists, error:error1 } = await supabase
             .from('users')
             .select('*')
-            .eq('email', email)
-            .single();
-        let instructedCourses = await courseService.getInstructedCourses(checkUserExists);
-        let enrolledCourses = await courseService.getEnrolledCourses(checkUserExists);
-        console.log('instructedCourses: ', instructedCourses);
+            .eq('email', email);
+        console.log('checkUserExists: ', checkUserExists);
+        console.error(error1);
+        if (!checkUserExists) {
+            throw new Error('Request failed')
+        }
+        // console.log('instructedCourses: ', instructedCourses);
         // console.log(checkUserExists, error1);
         if (checkUserExists.length == 0) {
             console.log('Email not registered');
             throw new Error('Email not registered');
-        } else if (checkUserExists.is_verified === false) {
+        } else if (checkUserExists[0].is_verified === false) {
             console.log('User not verfied')
             throw new Error('Users not verified');
-        } else if (await bcrypt.compare(password, checkUserExists.password)) {
+        } else if (await bcrypt.compare(password, checkUserExists[0].password)) {
+            let instructedCourses = await courseService.getInstructedCourses(checkUserExists[0]);
+            let enrolledCourses = await courseService.getEnrolledCourses(checkUserExists[0]);
             const accessToken =  jwt.sign({
-                id: checkUserExists.id,
-                username: checkUserExists.username,
-                email: checkUserExists.email,
+                id: checkUserExists[0].id,
+                username: checkUserExists[0].username,
+                email: checkUserExists[0].email,
             }, jwtsecret);
             const data = {
                 token: accessToken,
-                id: checkUserExists.id,
-                username: checkUserExists.username,
-                email: checkUserExists.email,
+                id: checkUserExists[0].id,
+                username: checkUserExists[0].username,
+                email: checkUserExists[0].email,
                 instructedCourses: instructedCourses,
                 enrolledCourses: enrolledCourses
             }
@@ -128,7 +132,7 @@ const login = async (user) => {
         }
     } catch (error) {
         console.error(error.message);
-        throw new Error(error);
+        throw new Error(error.message);
     }
 }
 

@@ -390,6 +390,21 @@ const insertLecture = async (userLoggedIn, newLecture) => {
     return true;
 }
 
+const isAdmin = async (userLoggedIn, courseId) => {
+    const { data, error } = await supabase
+        .from('user_roles')
+        .select('*')
+        .match({
+            user_id: userLoggedIn.id,
+            course_id: courseId,
+            role: 'admin'
+        })
+    if (error) {
+        throw new Error('Request failed');
+    }
+    return data;
+}
+
 module.exports = {
     createSection,
     createCourse,
@@ -413,5 +428,6 @@ module.exports = {
     getEnrollment,
     checkUserRoles,
     insertBlog,
-    insertLecture
+    insertLecture,
+    isAdmin
 }

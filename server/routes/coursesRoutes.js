@@ -15,6 +15,7 @@ courseRouter.route('/lectures/:id').get(authenticateToken, courseController.getL
 courseRouter.route('/:id').get(courseController.getCourse);     /* WARNING: this line makes every requests with base URL 'courses' get redirected to '/courses/:id' */
 // .patch(courseController.updateCourse);
 
+courseRouter.route('/admin/isAuth/:id').get(authenticateToken, courseController.isAdmin);
 
 module.exports = {
     courseRouter

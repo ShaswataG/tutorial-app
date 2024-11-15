@@ -122,6 +122,17 @@ const createLecture = async (req, res) => {
     }
 }
 
+/* GET: http://localhost:4000/courses/admin/isAuth/:id */
+const isAdmin = async (req, res) => {
+    try {
+        const data = await courseService.isAdmin(req.user, req.params.id);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: error.message });
+    }
+}
+
 module.exports = {
     createCourse,
     getCourse,
@@ -132,5 +143,6 @@ module.exports = {
     getBlog,
     getLecture,
     createBlog,
-    createLecture
+    createLecture,
+    isAdmin
 }
