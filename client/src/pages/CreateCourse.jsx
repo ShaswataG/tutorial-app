@@ -1,14 +1,20 @@
 import { FormControl, InputLabel, Select, MenuItem, TextField, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import CourseLearningPointsContainer from "../components/CreateCourse/CourseLearningPoints/CourseLearningPointsContainer";
 import DefaultTextField from "../components/CreateCourse/DefaulTextField";
 import { useState } from "react";
 import '../styles/createCourse/createCourse.css';
 import axios from "axios";
+import { Bounce, ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const baseURL = 'http://localhost:4000';
 
 export default function CreateCourse() {
 
+    const navigate = useNavigate();
+
+    const [courseInfoVacant, setCourseInfoVacant] = [];
     const [createCourseFailed, setCreateCourseFailed] = useState(false);
     const [courseInfo, setCourseInfo] = useState({
         title: "",
@@ -19,11 +25,11 @@ export default function CreateCourse() {
         level: "beginner",
         category: "",
         image: "",
-    })
+    });
 
     const handleChange = async (event) => {
         const { name, value } = event.target;
-        console.log('courseInfo: ', courseInfo);
+        // console.log('courseInfo: ', courseInfo);
         setCourseInfo(prevCourseInfo => {
             return {
                 ...prevCourseInfo,
@@ -35,8 +41,8 @@ export default function CreateCourse() {
     const handleChangeOnLearningPoint = async (event) => {
         const { id, value } = event.target;
         console.log(typeof(id));
-        console.log('handleChangeOnLearningPoint is being called');
-        console.log('courseInfo: ', courseInfo)
+        // console.log('handleChangeOnLearningPoint is being called');
+        // console.log('courseInfo: ', courseInfo)
         setCourseInfo(prevCourseInfo => {
             let updatedLearningPoints = courseInfo.learningPoints.map((learningPoint, index) => {
                 console.log('id: ', id);
@@ -48,7 +54,7 @@ export default function CreateCourse() {
                     return learningPoint;
                 }
             });
-            console.log('updatedLearningPoints: ', updatedLearningPoints);
+            // console.log('updatedLearningPoints: ', updatedLearningPoints);
             return {
                 ...prevCourseInfo,
                 learningPoints: updatedLearningPoints,
@@ -57,20 +63,94 @@ export default function CreateCourse() {
     }
 
     const handleSubmit = async () => {
-        console.log('form submitted');
-        console.log("localStorage.getItem('jwt_token')", localStorage.getItem('jwt_token'));
+        // console.log("localStorage.getItem('jwt_token')", localStorage.getItem('jwt_token'));
         try {
             console.log('courseInfo: ', courseInfo);
-            const response = axios.post(baseURL+'/courses', courseInfo, 
+            if (courseInfo.title.trim() === "" || 
+                courseInfo.description.trim() === "" ||
+                courseInfo.category.trim() === "" ||
+                courseInfo.level.trim() === ""
+            ) {
+                toast.error('Please fillup all the necessary fields!', {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    pauseOnFocusLoss: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "light",
+                    // transition: Bounce,
+                });
+                return;
+            }
+            const emptyLearningPoint = [];
+            courseInfo.learningPoints.forEach(point => {
+                if (point.trim() === "") {
+                    emptyLearningPoint.push(point);
+                }
+            })
+            if (emptyLearningPoint.length > 0) {
+                toast.error('Learning objectives cannot be empty!', {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    pauseOnFocusLoss: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "light",
+                    // transition: Bounce,
+                });
+                return;
+            }
+            const response = await axios.post(baseURL+'/courses', courseInfo, 
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('jwt_token')}`
                     }
-            });
+                }   
+            );
             console.log('response', response);
-
+            setCourseInfo({
+                title: "",
+                description: "",
+                isPaid: false,
+                price: 0    ,
+                learningPoints: ["", "", ""],
+                level: "beginner",
+                category: "",
+                image: "",
+            })
+            toast.success('Created course successfully!', {
+                position: "top-center",
+                autoClose: 3000, // Standard 5 seconds
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                pauseOnFocusLoss: false,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+                icon: true, // Disables icon if it appears too large
+            });
+            // navigate('/dashboard/instructedCourses')
         } catch (error) {
-            console.log('error: couse creation failed');
+            console.error('Course creation failed');
+            toast.error('Course creation failed', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                pauseOnFocusLoss: false,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+                // transition: Bounce,
+                });
             setCreateCourseFailed(true);
         }
     }
@@ -78,6 +158,19 @@ export default function CreateCourse() {
     return (
         <>
             <form className="create-course-form">
+                <ToastContainer
+                    position="top-center"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss={false}
+                    draggable={false}
+                    pauseOnHover={false}
+                    theme="light"
+                    transition={Bounce}
+                />
                 <FormControl 
                     fullWidth 
                     sx={{
@@ -111,6 +204,7 @@ export default function CreateCourse() {
                                 label="Course Level"
                                 onChange={handleChange}
                                 sx={{ width: "10rem" }}
+                                required
                             >
                                 <MenuItem value="beginner">Beginner</MenuItem>
                                 <MenuItem value="intermediate">Intermediate</MenuItem>
@@ -127,6 +221,7 @@ export default function CreateCourse() {
                                 label="Paid Course"
                                 onChange={handleChange}
                                 sx={{ width: "10rem" }}
+                                required
                             >
                                 <MenuItem value={true}>Yes</MenuItem>
                                 <MenuItem value={false}>No</MenuItem>
@@ -148,7 +243,7 @@ export default function CreateCourse() {
                             />
                         }
                     </FormControl>
-                    <DefaultTextField label="Course Category" name="category" value={courseInfo.category} handleChange={handleChange} />
+                    <DefaultTextField label="Course Category" name="category" value={courseInfo.category} handleChange={handleChange} required={true} />
                     <CourseLearningPointsContainer courseInfo={courseInfo} changeCourseInfo={setCourseInfo} handleChange={handleChangeOnLearningPoint} />
                 </FormControl>
                 <section
@@ -158,13 +253,13 @@ export default function CreateCourse() {
                         justifyContent: "flex-end"
                     }}
                 >
-                    <div className="create-course-warning">
+                    {/* <div className="create-course-warning">
                         {
                             createCourseFailed
                             &&
                             <span>Couldn't create course</span>
                         }
-                    </div>
+                    </div> */}
                     <Button 
                         sx={{
                             mt: "2.4rem",

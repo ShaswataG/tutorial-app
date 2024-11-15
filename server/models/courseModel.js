@@ -22,17 +22,19 @@ const { errorMonitor } = require('nodemailer/lib/ses-transport');
 //     return data;
 // }
 
-const createSection = async (userLoggedIn, newSectionInfo) => {
+const insertSection = async (userLoggedIn, newSectionInfo) => {
     const { courseId, title, position } = newSectionInfo;
-    const data = await supabase
+    const { data, error } = await supabase
         .from('sections')
         .insert({
             course_id: courseId,
             title: title,
             position: position
         });
-    if (error)
-        throw new Error(error);
+    if (error) {
+        console.error(error.message);
+        throw new Error(`Failed to create section`);
+    }
     return data;
 }
 
@@ -140,7 +142,7 @@ const insertCourseLearningPoint = async (point, courseId) => {
             point: point
         })
     if (error)
-        throw new Error(error);
+        throw new Error("Failed to insert course learning point");
     return data;
 }
 
@@ -277,8 +279,8 @@ const insertSectionContent = async (sectionId, title, position) => {
         })
         .select();
     if (error) {
-        console.error(error);
-        throw new Error(error);
+        console.error(error.message);
+        throw new Error(`Failed to insert section_content`);
     }
     return data;
 }
@@ -351,7 +353,7 @@ const checkUserRoles = async (userLoggedIn, newBlog) => {
         .select('*')
         .match({
             user_id: userLoggedIn.id,
-            course_id: newBlog.course_id,
+            course_id: newBlog.courseId,
             role: 'admin'
         })
     if (error)
@@ -363,11 +365,12 @@ const insertBlog = async (userLoggedIn, newBlog) => {
     const { data, error } = await supabase
         .from('blogs')
         .insert({
-            course_id: Number(newBlog.course_id),
+            course_id: Number(newBlog.courseId),
             author_id: Number(userLoggedIn.id),
-            section_content_id: newBlog.section_content_id,
+            section_content_id: newBlog.sectionContentId,
             title: newBlog.title,
             content: newBlog.content,
+            section_id: newBlog.sectionId
         });
     if (error)
         throw new Error(`Blog upload failed`);
@@ -406,7 +409,7 @@ const isAdmin = async (userLoggedIn, courseId) => {
 }
 
 module.exports = {
-    createSection,
+    insertSection,
     createCourse,
     insertCourse,
     insertOwner,

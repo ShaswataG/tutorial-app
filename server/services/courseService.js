@@ -1,7 +1,17 @@
 const { captureRejectionSymbol } = require('nodemailer/lib/xoauth2');
 const courseModel = require('../models/courseModel');
 
-const createSection = async (userLoggedIn, sectionInfo) => {
+const insertSection = async (userLoggedIn, sectionInfo) => {
+    try {
+        const checkUserRoles = await courseModel.checkUserRoles(userLoggedIn, sectionInfo);
+        if (checkUserRoles.length < 1) {
+            throw new Error(`You don't have write access to this course`);
+        }
+        const insertedSection = await courseModel.insertSection(userLoggedIn, sectionInfo);
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
     return await courseModel.createSection(userLoggedIn, sectionInfo)
 }
 
@@ -41,7 +51,7 @@ const createCourse = async (userLoggedIn, courseInfo) => {
             console.log(learningPoint);
             await courseModel.insertCourseLearningPoint(learningPoint, courseId);
         });
-        console.log('test');
+        return newCourseInserted;
     } catch (error) {
         console.error(error);
         throw new Error(error);
@@ -219,17 +229,17 @@ const getLecture = async (userLoggedIn, lectureId) => {
 
 const createBlog = async (userLoggedIn, newBlog) => {
     try {
-        const { course_id, title, position, section_id } = newBlog;
+        const { courseId, title, position, sectionId } = newBlog;
         console.log(`courseService.createBlog is being called`);
         const checkUserRoles = await courseModel.checkUserRoles(userLoggedIn, newBlog);
         if (checkUserRoles.length < 1) {
             throw new Error(`You don't have write access to this course`);
         }
-        let insertedSectionContent = await courseModel.insertSectionContent(section_id, title, position);
+        let insertedSectionContent = await courseModel.insertSectionContent(sectionId, title, position);
         console.log('sectionContent', insertedSectionContent);
         newBlog = {
             ...newBlog,
-            section_content_id: insertedSectionContent[0].id
+            sectionContentId: insertedSectionContent[0].id
         }
         if (await courseModel.insertBlog(userLoggedIn, newBlog) === true)
             return true;
@@ -256,21 +266,24 @@ const createLecture = async (userLoggedIn, newLecture) => {
 
 const isAdmin = async (userLoggedIn, courseId) => {
     try {
+        console.log('courseService.isAdmin');
         const checkUserAuth = await courseModel.isAdmin(userLoggedIn, courseId);
         if (checkUserAuth && checkUserAuth.length < 1) {
-            throw new Error(`User doesn't have write access`);
-        } else {
             return {
-                isAdmin: true
-            }
+                isAdmin: false
+            };
+            // throw new Error(`User doesn't have write access`);
         }
+        return {
+            isAdmin: true
+        };
     } catch (error) {
         throw new Error(error.message);
     }
 }
 
 module.exports = {
-    createSection,
+    insertSection,
     createCourse,
     getCourses,
     getCourse,

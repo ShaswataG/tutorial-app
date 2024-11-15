@@ -12,6 +12,7 @@ import './styles/loginForm.css';
 import './styles/dashboard/dashboard.css';
 import './styles/courseDetails/courseDetails.css';
 import './styles/blogEditor/blogEditor.css';
+import './styles/blog/blog.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

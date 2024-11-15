@@ -1,6 +1,17 @@
 const { supabase } = require("../connect");
 const courseService = require('../services/courseService');
 
+/* POST: http://localhost:4000/courses/section */
+const createSection = async (req, res) => {
+    try {
+        const data = await courseService.insertSection(req.user, req.body);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ message: error.message });
+    }
+}
+
 /* POST: http://localhost:4000/courses */
 const createCourse = async (req, res) => {
     console.log('inside courseController.createCourse');
@@ -134,6 +145,7 @@ const isAdmin = async (req, res) => {
 }
 
 module.exports = {
+    createSection,
     createCourse,
     getCourse,
     getCourses,

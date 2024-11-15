@@ -12,6 +12,7 @@ export default function DefaultTextField(props) {
             sx={{
                 maxWidth: "50rem"
             }}
+            required={props.required}
         />
     )
 }

@@ -10,7 +10,7 @@ export default function CourseLearningPointsContainer(props) {
 
     const addPoint = () => {
         setTextfieldsCollection(prevState => {
-            return props.courseInfo.learningPoints.map((learningPoint, index) => (<LearningPointTextfield key={index} id={index} handleChange={props.handleChange} value={props.courseInfo.learningPoint} />))
+            return props.courseInfo.learningPoints.map((learningPoint, index) => (<LearningPointTextfield key={index} id={index} handleChange={props.handleChange} value={props.courseInfo.learningPoint} required={true} />))
         })
         props.changeCourseInfo(prevCourseInfo => {
             let courseLearningPoints = props.courseInfo.learningPoints;

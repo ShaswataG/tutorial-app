@@ -1,0 +1,7 @@
+.blog {
+    padding: 10rem;
+}
+
+.blog > h1:first-of-type {
+    /* font-size: 2.8rem; */
+}

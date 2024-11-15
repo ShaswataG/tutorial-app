@@ -11,6 +11,8 @@ import BlogEditor from './pages/BlogEditor';
 import Blog from './pages/Blog';
 import InstructedCourses from './pages/InstructedCourses';
 import CreateCourse from './pages/CreateCourse';
+import AdminRoute from './components/AdminRoute';
+import Unauthorized from './pages/Unauthorized';
 
 function App() {
   return (
@@ -20,7 +22,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/dashboard'>
+          <Route 
+            path='/dashboard'>
             <Route 
               index 
               element={
@@ -31,7 +34,7 @@ function App() {
             />
             <Route path='/dashboard/instructedCourses' element={<InstructedCourses />}/>
             <Route path='/dashboard/instructedCourses/createCourse' element={<CreateCourse />} />
-           </Route>
+          </Route> 
           {/* <Route 
               path='/dashboard' 
               element={
@@ -40,13 +43,21 @@ function App() {
                 </ProtectedRoute>
             } 
           /> */}
-          <Route
-              path='/editBlog'
-              element={
-                <ProtectedRoute>
-                    <BlogEditor />
-                </ProtectedRoute>
-              }
+          <Route 
+            path='/instructedCourses/:courseId/addBlog'
+            element={
+              <AdminRoute>
+                <BlogEditor />
+              </AdminRoute>
+            }
+          />
+          <Route 
+            path='/dashboard/instructedCourses/:courseId/editCourse'
+            element={
+              <AdminRoute>
+                <CreateCourse />
+              </AdminRoute>
+            }
           />
           <Route path='/courses/:id' element={<CourseDetails />} />
           <Route path='/courses/blogs/:id' element={<Blog />} />
@@ -54,6 +65,7 @@ function App() {
         {/* <Route path="/courses" element={<Navbar/> }> */}
           {/* <Route path='/courses/:id' element={<CourseDetails />} /> */}
         {/* </Route> */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>

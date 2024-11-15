@@ -4,6 +4,6 @@ const ariaLabel = { 'aria-label': 'description' };
 
 export default function LearningPointTextfield(props) {
     return (
-        <Input id={`${props.id}`} placeholder="Placeholder" inputProps={ariaLabel} onChange={props.handleChange} value={props.value} />
+        <Input id={`${props.id}`} placeholder="Placeholder" inputProps={ariaLabel} onChange={props.handleChange} value={props.value} required={props.required} />
     )
 }

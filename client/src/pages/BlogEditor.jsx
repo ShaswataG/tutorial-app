@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
+import { Bounce, ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const baseURL = 'http://localhost:4000';
 
@@ -14,21 +16,66 @@ export default function BlogEditor() {
     const blogData = {
       title: title,
       content: markdown,
+
+      courseId: 55,
+      sectionId: 3,
+      position: 1,
     };
 
     try {
-      // Posting to your backend
-      await axios.post(`${baseURL}/courses/blogs`, blogData);
-      alert("Blog posted successfully!");
+      await axios.post(`${baseURL}/courses/blogs`, blogData,
+        {
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem('jwt_token')}`
+          }
+        } 
+      );
+      toast.success('Created course successfully!', {
+        position: "top-center",
+        autoClose: 3000, // Standard 5 seconds
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        icon: true, // Disables icon if it appears too large
+      });
       setMarkdown("");
       setTitle("");
     } catch (error) {
       console.error("Error posting blog:", error);
+      toast.error('Failed to upload blog!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        // transition: Bounce,
+        });
     }
   };
 
   return (
     <div className="blog-editor-container">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover={false}
+        theme="light"
+        transition={Bounce}
+      />
       <h1>Write a Blog</h1>
       <form onSubmit={handleSubmit}>
         <input
