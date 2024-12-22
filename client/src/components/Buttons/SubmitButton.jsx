@@ -1,6 +1,6 @@
 export default function SubmitButton({ handleClick, text }) {
     return (
-        <button handleClick={handleClick}>
+        <button onClick={handleClick}>
             {text}
         </button>
     )

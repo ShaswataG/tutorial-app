@@ -9,13 +9,14 @@ import 'react-toastify/dist/ReactToastify.css';
 const baseUrl = process.env.REACT_APP_BASE_URL;
 console.log('baseURL: ', baseUrl);
 
-export default function AddSectionPopup() {
+export default function AddSectionPopup({ courseId, nextPosition, setSectionPopup }) {
 
     const getAuthHeader = useAuthHeader();
 
     const [newSection, setNewSection] = useState({
         title: "",
-        position: 0,
+        position: nextPosition,
+        courseId: courseId
     })
 
     const handleChange = (event) => {
@@ -30,7 +31,7 @@ export default function AddSectionPopup() {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post(baseUrl+'/coueses/section', {
+            const response = await axios.post(baseUrl+'/courses/section', newSection, {
                 headers: getAuthHeader()
             })
             console.log('response: ', response);
@@ -61,6 +62,7 @@ export default function AddSectionPopup() {
                 // transition: Bounce,
                 });
         }
+        setSectionPopup(false);
     }
 
     return (
@@ -79,7 +81,7 @@ export default function AddSectionPopup() {
                 transition={Bounce}
             />
             <DefaultTextField label="Section Title" name="title" value={newSection.title} handleChange={handleChange} />
-            <SubmitButton text="Add" />
+            <SubmitButton text="Add" handleClick={handleSubmit} />
         </div>
     )
 }

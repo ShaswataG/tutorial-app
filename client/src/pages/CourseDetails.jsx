@@ -100,7 +100,7 @@ export default function CourseDetails() {
             </section>
             <section className='course-details--course-points'>
                 <h1>Course Content</h1>
-                <CourseContent sections={course.courseSections} />
+                <CourseContent isAdmin={isAdmin} sections={course.courseSections} />
             </section>
         </main>
     )

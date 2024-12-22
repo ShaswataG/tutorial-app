@@ -38,6 +38,19 @@ const insertSection = async (userLoggedIn, newSectionInfo) => {
     return data;
 }
 
+const updateSectionPosition = async (userLoggedIn, sectionInfo) => {
+    const { id, position }  = sectionInfo;
+    const { data, error } = await supabase
+        .from('sections')
+        .update({ position })
+        .eq('id', id);
+    if (error) {
+        console.error(error.message);
+        throw new Error(`Failed to update section position`);
+    }
+    return data;
+}
+
 const createCourse = async (userLoggedIn, newCourseInfo) => {
     try {
         console.log('courseModel.createCourse is being called');
@@ -410,6 +423,7 @@ const isAdmin = async (userLoggedIn, courseId) => {
 
 module.exports = {
     insertSection,
+    updateSectionPosition,
     createCourse,
     insertCourse,
     insertOwner,

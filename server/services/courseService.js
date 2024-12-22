@@ -8,17 +8,35 @@ const insertSection = async (userLoggedIn, sectionInfo) => {
             throw new Error(`You don't have write access to this course`);
         }
         const insertedSection = await courseModel.insertSection(userLoggedIn, sectionInfo);
-
+        return insertSection;
     } catch (error) {
         throw new Error(error.message);
     }
-    return await courseModel.createSection(userLoggedIn, sectionInfo)
 }
 
 // const createCourse = async (userLoggedIn, courseInfo) => {
 //     console.log('courseService.createCourse is getting called');
 //     return await courseModel.createCourse(userLoggedIn, courseInfo);
 // }
+
+const updateSectionPosition = async (userLoggedIn, updatedSections) => {
+    try {
+        const updates = updatedSections.map(({ id, position }) => {
+            return courseModel.updateSectionPosition(userLoggedIn, {
+                id: id,
+                position: position
+            })
+        })
+        await Promise.all(updates);
+        console.log('updates: ', updates);
+        return {
+            message: "Section positions updated successfully"
+        }
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 
 const createCourse = async (userLoggedIn, courseInfo) => {
     try {
@@ -284,6 +302,7 @@ const isAdmin = async (userLoggedIn, courseId) => {
 
 module.exports = {
     insertSection,
+    updateSectionPosition,
     createCourse,
     getCourses,
     getCourse,

@@ -7,7 +7,18 @@ const createSection = async (req, res) => {
         const data = await courseService.insertSection(req.user, req.body);
         return res.status(200).json(data);
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+/* PATCH: http://localhost:4000/courses/section/update-positions */
+const updateSectionPosition = async (req, res) => {
+    try {
+        const data = await courseService.updateSectionPosition(req.user, req.body.updatedSections);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error(error.message);
         res.status(500).json({ message: error.message });
     }
 }
@@ -146,6 +157,7 @@ const isAdmin = async (req, res) => {
 
 module.exports = {
     createSection,
+    updateSectionPosition,
     createCourse,
     getCourse,
     getCourses,
