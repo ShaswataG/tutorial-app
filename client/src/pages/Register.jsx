@@ -6,7 +6,7 @@ import Validations from "../components/Register/Validations";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-const baseURL = 'http://localhost:4000';
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function Register() {
 

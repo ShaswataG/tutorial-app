@@ -14,6 +14,7 @@ courseRouter.route('/lectures').post(authenticateToken, courseController.createL
 courseRouter.route('/lectures/:id').get(authenticateToken, courseController.getLecture);
 courseRouter.route('/:id').get(courseController.getCourse);     /* WARNING: this line makes every requests with base URL 'courses' get redirected to '/courses/:id' */
 // .patch(courseController.updateCourse);
+courseRouter.route('/section').post(authenticateToken, courseController.createSection);
 
 courseRouter.route('/admin/isAuth/:id').get(authenticateToken, courseController.isAdmin);
 

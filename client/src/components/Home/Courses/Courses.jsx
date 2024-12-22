@@ -2,7 +2,8 @@ import axios from 'axios';
 import CourseTab from './CoursesTab';
 import { useEffect, useState } from 'react';
 import CoursesContainer from './CoursesContainer';
-const baseURL = 'http://localhost:4000';
+
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function Courses() {
     const [category, setCategory] = useState('Web Development');

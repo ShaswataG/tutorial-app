@@ -6,7 +6,7 @@ import Button from "../helpers/Button";
 import axios from "axios";
 import { useEffect, useState } from 'react';
 
-const baseURL = 'http://localhost:4000';
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function Dashboard() {
     // const fetchUserInfo = async () => {

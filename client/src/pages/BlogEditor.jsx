@@ -4,7 +4,7 @@ import axios from "axios";
 import { Bounce, ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-const baseURL = 'http://localhost:4000';
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function BlogEditor() {
   const [markdown, setMarkdown] = useState("");

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BlogContent from '../components/Blog/BlogContent';
 
-const baseURL = 'http://localhost:4000';
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function Blog() {
     const { id } = useParams();

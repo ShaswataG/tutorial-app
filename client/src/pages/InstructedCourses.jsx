@@ -5,7 +5,7 @@ import CoursesContainer from "../components/InstructedCourses/CoursesContainer";
 import '../styles/instructedCourses/instructedCourses.css';
 import Button from "../helpers/Button";
 
-const baseURL = 'http://localhost:4000';
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function InstructedCourses() {
     

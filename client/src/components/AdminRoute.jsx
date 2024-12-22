@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
-const baseUrl = 'http://localhost:4000';
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export default function AdminRoute({ children }) {
 

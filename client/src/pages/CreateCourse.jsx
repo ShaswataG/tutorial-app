@@ -5,10 +5,10 @@ import DefaultTextField from "../components/CreateCourse/DefaulTextField";
 import { useState } from "react";
 import '../styles/createCourse/createCourse.css';
 import axios from "axios";
-import { Bounce, ToastContainer, toast } from 'react-toastify'
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const baseURL = 'http://localhost:4000';
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function CreateCourse() {
 
