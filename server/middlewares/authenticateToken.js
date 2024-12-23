@@ -11,7 +11,7 @@ const authenticateToken = (req, res, next) => {
         return res.status(500).send('Token not provided');
         jwt.verify(token, jwtsecret, (err, user) => {
         if (err) {
-            console.err(err);
+            console.error(err);
             return res.status(500).send('Unauthorized');
         }
         req.user = user;

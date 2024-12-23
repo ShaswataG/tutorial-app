@@ -6,10 +6,11 @@ import AddSectionButton from '../../Buttons/AddSectionButton';
 import AddSectionPopup from './AddSectionPopup';
 import axios from 'axios';
 import useAuthHeader from '../../../hooks/useAuthHeader';
+import AddContentPopup from './AddContentPopup';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-export default function CourseContent({ isAdmin, sections: initialSections }) {
+export default function CourseContent({ isAdmin, sections: initialSections = [] }) {
     const getAuthHearer = useAuthHeader();
     const [sections, setSections] = useState(initialSections);
     const { id } = useParams();
@@ -45,7 +46,7 @@ export default function CourseContent({ isAdmin, sections: initialSections }) {
     }, [sections]);
 
     const [sectionPopup, setSectionPopup] = useState(false);
-    
+
     return (
         <>
             <p>{sections.length} sections</p>
@@ -66,7 +67,7 @@ export default function CourseContent({ isAdmin, sections: initialSections }) {
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                         >
-                                            <Section sectionInfo={section} />
+                                            <Section isAdmin={isAdmin} sectionInfo={section} />
                                         </div>
                                     )}
                                 </Draggable>
@@ -81,21 +82,11 @@ export default function CourseContent({ isAdmin, sections: initialSections }) {
                 &&
                 <AddSectionPopup courseId={id} nextPosition={sections.length+1} setSectionPopup={setSectionPopup} />
             }
-            <AddSectionButton handleClick={() => {setSectionPopup(!sectionPopup)}} text="Add section" />
+            {
+                isAdmin
+                &&
+                <AddSectionButton handleClick={() => {setSectionPopup(!sectionPopup)}} text="Add section" />
+            }
         </>
     )
-
-
-    // return (
-    //     <>
-    //         <p>{props.sections.length} sections</p>
-    //         {sections}
-    //         {
-    //             sectionPopup
-    //             &&
-    //             <AddSectionPopup />
-    //         }
-    //         <AddSectionButton handleClick={() => {setSectionPopup(!sectionPopup)}} text="Add section" />
-    //     </>
-    // )
 }

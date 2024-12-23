@@ -1,14 +1,18 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import { Bounce, ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import useAuthHeader from "../hooks/useAuthHeader";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
 export default function BlogEditor() {
+  const getAuthHearer = useAuthHeader();
   const [markdown, setMarkdown] = useState("");
   const [title, setTitle] = useState("");
+  const { courseId, sectionId, position } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,17 +21,15 @@ export default function BlogEditor() {
       title: title,
       content: markdown,
 
-      courseId: 55,
-      sectionId: 3,
-      position: 1,
+      courseId: courseId,
+      sectionId: sectionId,
+      position: position,
     };
 
     try {
       await axios.post(`${baseURL}/courses/blogs`, blogData,
         {
-          headers: {
-              Authorization: `Bearer ${localStorage.getItem('jwt_token')}`
-          }
+          headers: getAuthHearer()
         } 
       );
       toast.success('Created course successfully!', {

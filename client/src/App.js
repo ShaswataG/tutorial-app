@@ -44,7 +44,7 @@ function App() {
             } 
           /> */}
           <Route 
-            path='/instructedCourses/:courseId/addBlog'
+            path='/instructedCourses/:courseId/:sectionId/:position/addBlog'
             element={
               <AdminRoute>
                 <BlogEditor />

@@ -124,13 +124,15 @@ const getCourse = async (courseId) => {
                 if (item.blogs.length > 0) {
                     content = {
                         ...item.blogs[0],
+                        // id: item.id,
                         type: "blog",
-                    }
+                    };
                 } else if (item.lectures.length > 0) {
                     content = {
                         ...item.lectures[0],
+                        // id: item.id,
                         type: "lecture",
-                    }
+                    };
                 }
 
                 return {
@@ -138,8 +140,8 @@ const getCourse = async (courseId) => {
                     ...content,
                     blogs: undefined,
                     lectures: undefined
-                }
-            })
+                };
+            });
             courseSections[index] = {
                 ...courseSection,
                 content: data
@@ -153,6 +155,7 @@ const getCourse = async (courseId) => {
         }
         return course;
     } catch (error) {
+        console.error(error.message);
         throw new Error(error.message);
     }
 }
@@ -269,10 +272,17 @@ const createBlog = async (userLoggedIn, newBlog) => {
 
 const createLecture = async (userLoggedIn, newLecture) => {
     try {
+        const { courseId, title, position, sectionId } = newLecture;
         console.log(`courseService.createBlog is being called`);
         const checkUserRoles = await courseModel.checkUserRoles(userLoggedIn, newLecture);
         if (checkUserRoles.length < 1) {
             throw new Error(`You don't have write access to this course`);
+        }
+        let insertedSectionContent = await courseModel.insertSectionContent(sectionId, title, position);
+        console.log('sectionContent: ', insertedSectionContent);
+        newLecture = {
+            ...newLecture,
+            sectionContentId: insertedSectionContent[0].id
         }
         if (await courseModel.insertLecture(userLoggedIn, newLecture) === true)
             return true;

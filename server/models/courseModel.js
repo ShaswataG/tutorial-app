@@ -250,8 +250,12 @@ const getInstructedCourses = async (userLoggedIn) => {
             user_id: userLoggedIn.id,
             role: 'admin'
         });
-    if (error)
-        throw new Error(error);
+    console.log('data: ', data);
+    console.log('error: ', error);
+    if (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
     return data;
 }
 
@@ -301,11 +305,13 @@ const insertSectionContent = async (sectionId, title, position) => {
 const getSectionContent = async (sectionId) => {
     let { data, error } = await supabase
         .from('section_content')
-        .select('blogs(*), lectures(*)')
+        .select('id, blogs(*), lectures(*)')
         .eq('section_id', sectionId)
         .order('position', { ascending: true });
-    if (error)
-        throw new Error(error);
+    if (error) {
+        console.error('Supabase error:', error.message, error.details);
+        throw new Error(`Failed to fetch section content for section ID ${sectionId}`);
+    }
     // console.log('data: ', data);
     return data;
 }
@@ -360,13 +366,14 @@ const getEnrollment = async (userLoggedIn, courseId) => {
     return data;
 }
 
-const checkUserRoles = async (userLoggedIn, newBlog) => {
+const checkUserRoles = async (userLoggedIn, newContent) => {
+    console.log('newContent: ', newContent);
     const { data, error } = await supabase
         .from('user_roles')
         .select('*')
         .match({
             user_id: userLoggedIn.id,
-            course_id: newBlog.courseId,
+            course_id: newContent.courseId,
             role: 'admin'
         })
     if (error)
@@ -379,11 +386,11 @@ const insertBlog = async (userLoggedIn, newBlog) => {
         .from('blogs')
         .insert({
             course_id: Number(newBlog.courseId),
+            section_id: Number(newBlog.sectionId),
             author_id: Number(userLoggedIn.id),
-            section_content_id: newBlog.sectionContentId,
             title: newBlog.title,
             content: newBlog.content,
-            section_id: newBlog.sectionId
+            section_content_id: Number(newBlog.sectionContentId)
         });
     if (error)
         throw new Error(`Blog upload failed`);
@@ -394,12 +401,13 @@ const insertLecture = async (userLoggedIn, newLecture) => {
     const { data, error } = await supabase
         .from('lectures')
         .insert({
-            course_id: Number(newLecture.course_id),
-            section_id: Number(newLecture.section_id),
+            course_id: Number(newLecture.courseId),
+            section_id: Number(newLecture.sectionId),
             author_id: Number(userLoggedIn.id),
             title: newLecture.title,
-            video_url: newLecture.video_url,
-            description: newLecture.description
+            video_url: newLecture.videoURL,
+            description: newLecture.description,
+            section_content_id: Number(newLecture.sectionContentId),
         });
     if (error)
         throw new Error(`Lecture upload failed`);
